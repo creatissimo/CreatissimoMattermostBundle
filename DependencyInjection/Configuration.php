@@ -6,7 +6,7 @@
  * Time: 21:39
  */
 
-namespace Crea\MattermostBundle\DependencyInjection;
+namespace Creatissimo\MattermostBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
