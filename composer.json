@@ -4,7 +4,7 @@
   "keywords" : [
     "exception", "mattermost"
   ],
-  "homepage": "https://github.com/creatissimo/CreaMattermostBundle",
+  "homepage": "https://github.com/creatissimo/CreatissimoMattermostBundle",
   "type" : "symfony-bundle",
   "authors" : [{
     "name" : "Pascal Rossa",
@@ -22,7 +22,7 @@
       "Crea\\MattermostBundle": "",
     }
   },
-  "target-dir" : "Crea/MattermostBundle",
+  "target-dir" : "Creatissimo/MattermostBundle",
   "repositories" : [{
   }],
   "extra" : {

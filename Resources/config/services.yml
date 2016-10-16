@@ -1,11 +1,11 @@
 services:
     mattermost.helper:
-        class: Crea\MattermostBundle\Services\MattermostHelper
+        class: Creatissimo\MattermostBundle\Services\MattermostHelper
         arguments:
             - %kernel.environment%
 
-    mattermost_exception_logger.listener:
-        class: Crea\MattermostBundle\Services\ExceptionHandler
+    mattermost_exception.listener:
+        class: Creatissimo\MattermostBundle\Services\ExceptionHandler
         arguments:
             - @logger
             - %kernel.environment%

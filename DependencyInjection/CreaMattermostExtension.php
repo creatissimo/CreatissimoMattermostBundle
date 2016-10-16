@@ -1,5 +1,5 @@
 <?php
-namespace Crea\MattermostBundle\DependencyInjection;
+namespace Creatissimo\MattermostBundle\DependencyInjection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class CreaMattermostExtension extends Extension
+class CreatissimoMattermostExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -31,7 +31,7 @@ class CreaMattermostExtension extends Extension
 
         if (array_key_exists('botname', $config))
         {
-            $exceptionHandlerDefinition->addMethodCall('setBotname', array($config['botname']));
+            $exceptionHandlerDefinition->addMethodCall('setUsername', array($config['botname']));
         }
     }
 }

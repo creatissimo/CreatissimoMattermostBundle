@@ -5,7 +5,7 @@
  * Time: 22:12
  */
 
-namespace Crea\MattermostBundle\Command;
+namespace Creatissimo\MattermostBundle\Command;
 
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;

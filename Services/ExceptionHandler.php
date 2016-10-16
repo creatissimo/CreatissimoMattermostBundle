@@ -7,22 +7,22 @@
  * Time: 21:33
  */
 
-namespace Crea\MattermostBundle\Service;
+namespace Creatissimo\MattermostBundle\Service;
 
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
-use Crea\MattermostBundle\Service\MattermostHelper;
 
 class ExceptionHandler
 {
     /** @var  LoggerInterface  */
     private $logger;
+
     /** @var string */
     private $environment;
+
     /** @var MattermostHelper */
     private $mmHelper;
-    /** @var string */
-    private $botname;
+
     /** @var array */
     private $environmentConfigurations;
 

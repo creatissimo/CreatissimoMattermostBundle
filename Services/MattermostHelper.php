@@ -7,7 +7,7 @@
  * Time: 21:33
  */
 
-namespace Crea\MattermostBundle\Service;
+namespace Creatissimo\MattermostBundle\Service;
 
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
