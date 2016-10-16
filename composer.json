@@ -1,0 +1,33 @@
+{
+  "name" : "creatissimo/mattermost-bundle",
+  "description" : "Symfony2 Bundle for communicating with the Mattermost chat",
+  "keywords" : [
+    "exception", "mattermost"
+  ],
+  "homepage": "https://github.com/creatissimo/CreaMattermostBundle",
+  "type" : "symfony-bundle",
+  "authors" : [{
+    "name" : "Pascal Rossa",
+    "email" : "rossa@creatissimo.net"
+  }],
+  "license" : [
+    "Apache License Version 2.0"
+  ],
+  "require" : {
+    "php": ">=5.3.2",
+    "symfony/framework-bundle": "2.*"
+  },
+  "autoload" : {
+    "psr-4" : {
+      "Crea\\MattermostBundle": "",
+    }
+  },
+  "target-dir" : "Crea/MattermostBundle",
+  "repositories" : [{
+  }],
+  "extra" : {
+    "branch-alias" : {
+      "dev-master" : "1.0.x-dev"
+    }
+  }
+}
