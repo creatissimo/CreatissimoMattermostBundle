@@ -19,7 +19,7 @@
   },
   "autoload" : {
     "psr-4" : {
-      "Creatissimo\\MattermostBundle": "",
+      "Creatissimo\\MattermostBundle\\": ""
     }
   },
   "target-dir" : "Creatissimo/MattermostBundle",
