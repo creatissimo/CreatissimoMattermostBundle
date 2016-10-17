@@ -10,8 +10,9 @@
 namespace Creatissimo\MattermostBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Creatissimo\MattermostBundle\Constant\ExceptionConstant;
 use Creatissimo\MattermostBundle\Services\MattermostService;
+use Creatissimo\MattermostBundle\Services\ExceptionHelper;
+
 
 class KernelExceptionListener
 {
