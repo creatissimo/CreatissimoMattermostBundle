@@ -76,25 +76,24 @@ class MattermostService
      */
     protected function buildMessage()
     {
-        $text = $this->getText();
-        if (empty($text)) return false;
+        if (!$this->getText()) return false;
 
         $json = null;
         $message = [ 'text' => $this->getText() ];
 
-        if(!empty($this->getChannel())) {
+        if ($this->getChannel()) {
             $message[ 'channel'] = $this->getChannel();
         }
 
-        if (!empty($this->getIcon())) {
+        if ($this->getIcon()) {
             $message['icon_url'] = $this->getIcon();
         }
 
-        if (!empty($this->getUsername())) {
+        if ($this->getUsername()) {
             $message['username'] = $this->getUsername();
         }
 
-        if (!empty($this->getAttachments())) {
+        if ($this->getAttachments() && (count($this->getAttachments()) > 0)) {
             $message['attachments'] = $this->getAttachments();
         }
 
