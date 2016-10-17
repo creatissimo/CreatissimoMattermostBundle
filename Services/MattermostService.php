@@ -110,9 +110,8 @@ class MattermostService
      */
     public function sendMessage()
     {
-        if (empty($this->getText())) {
-            return false;
-        }
+        if (!$this->getText()) return false;
+
         $ch = curl_init();
         if (!$ch) {
             $this->log('Failed to create curl handle');
