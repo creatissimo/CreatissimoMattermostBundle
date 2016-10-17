@@ -76,7 +76,8 @@ class MattermostService
      */
     protected function buildMessage()
     {
-        if (empty($this->getText())) return false;
+        $text = $this->getText();
+        if (empty($text)) return false;
 
         $json = null;
         $message = [ 'text' => $this->getText() ];
