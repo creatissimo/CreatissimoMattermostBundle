@@ -1,5 +1,6 @@
 <?php
 namespace Creatissimo\MattermostBundle\DependencyInjection;
+
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -23,15 +24,24 @@ class CreatissimoMattermostExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $exceptionHandlerDefinition = $container->getDefinition('mattermost.helper');
-        $exceptionHandlerDefinition->addMethodCall('setWebhook', array($config['webhook']));
-        $exceptionHandlerDefinition->addMethodCall('setChannel', array($config['channel']));
-        $exceptionHandlerDefinition->addMethodCall('setName', array($config['name']));
-        $exceptionHandlerDefinition->addMethodCall('setEnvironmentConfigurations', array($config['environments']));
+        $definition = $container->getDefinition('mattermost.service');
+        $definition->addMethodCall('setWebhook', array($config['webhook']));
+        $definition->addMethodCall('setAppname', array($config['appname']));
+        $definition->addMethodCall('setEnvironmentConfigurations', array($config['environments']));
 
         if (array_key_exists('botname', $config))
         {
-            $exceptionHandlerDefinition->addMethodCall('setUsername', array($config['botname']));
+            $definition->addMethodCall('setUsername', array($config['botname']));
+        }
+
+        if (array_key_exists('icon', $config))
+        {
+            $definition->addMethodCall('setIcon', array($config['icon']));
+        }
+
+        if (array_key_exists('channel', $config))
+        {
+            $definition->addMethodCall('setChannel', array($config['channel']));
         }
     }
 }

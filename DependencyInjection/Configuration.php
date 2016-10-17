@@ -34,7 +34,7 @@ class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->end()
 
-                ->scalarNode('name')
+                ->scalarNode('appname')
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->end()
@@ -42,13 +42,22 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('botname')
                 ->end()
 
+                ->scalarNode('icon')
+                ->end()
+
+                ->scalarNode('channel')
+                ->end()
+
                 ->arrayNode('environments')
                     ->isRequired()
                     ->prototype('array')
                         ->children()
                             ->booleanNode('enabled')->defaultTrue()->end()
-                            ->scalarNode('color')->defaultValue('danger')->end()
-                            ->scalarNode('channel')->isRequired()->end()
+                            ->scalarNode('webhook')->end()
+                            ->scalarNode('appname')->end()
+                            ->scalarNode('botname')->end()
+                            ->scalarNode('icon')->end()
+                            ->scalarNode('channel')->end()
                             ->arrayNode('exclude_exception')->prototype('scalar')->end()
                         ->end()
                     ->end()

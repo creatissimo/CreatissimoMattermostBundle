@@ -10,14 +10,14 @@ namespace Creatissimo\MattermostBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Crea\MattermostBundle\Services\MattermostHelper;
 
 class PostCommand extends ContainerAwareCommand
 {
-    use CommandTrait;
-
     /**
      * {@inheritdoc}
      */
@@ -26,9 +26,14 @@ class PostCommand extends ContainerAwareCommand
         $this
             ->setName('mattermost:post')
             ->setDescription('Send a post to mattermost')
-            ->addArgument('text', InputArgument::REQUIRED, 'Text to post')
-            ->addArgument('channel', InputArgument::OPTIONAL, 'Channelname to post to; Default = Setting in Mattermost')
-            ->addArgument('username', InputArgument::OPTIONAL, 'Username of user that sends post; Default = Bot');
+            ->setDefinition(
+                new InputDefinition(array(
+                    new InputOption('text', 't', InputOption::VALUE_REQUIRED),
+                    new InputOption('channel', 'c', InputOption::VALUE_OPTIONAL),
+                    new InputOption('username', 'u', InputOption::VALUE_OPTIONAL),
+                    new InputOption('icon', 'i', InputOption::VALUE_OPTIONAL)
+                ))
+            );
     }
 
     /**
@@ -36,17 +41,20 @@ class PostCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $mmHelper = $this->getContainer()->get('mattermost.helper');
+        $mmService = $this->getContainer()->get('mattermost.service');
 
-        $text = $input->getArgument('text');
-        $mmHelper->setText($text);
+        $text = $input->getOption('text');
+        $mmService->setText($text);
 
-        $channel = $input->getArgument('channel');
-        if($channel) $mmHelper->setChannel($channel);
+        $channel = $input->getOption('channel');
+        if($channel) $mmService->setChannel($channel);
 
-        $username = $input->getArgument('username');
-        if($username) $mmHelper->setUsername($username);
+        $username = $input->getOption('username');
+        if($username) $mmService->setUsername($username);
 
-        $mmHelper->sendMessage();
+        $icon = $input->getOption('icon');
+        if($icon) $mmService->setIcon($icon);
+
+        $mmService->sendMessage();
     }
 }
