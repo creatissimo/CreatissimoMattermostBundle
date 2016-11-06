@@ -25,23 +25,9 @@ class CreatissimoMattermostExtension extends Extension
         $loader->load('services.yml');
 
         $definition = $container->getDefinition('mattermost.service');
+        $definition->addMethodCall('setConfiguration', array($config));
         $definition->addMethodCall('setWebhook', array($config['webhook']));
         $definition->addMethodCall('setAppname', array($config['appname']));
         $definition->addMethodCall('setEnvironmentConfigurations', array($config['environments']));
-
-        if (array_key_exists('botname', $config))
-        {
-            $definition->addMethodCall('setUsername', array($config['botname']));
-        }
-
-        if (array_key_exists('icon', $config))
-        {
-            $definition->addMethodCall('setIcon', array($config['icon']));
-        }
-
-        if (array_key_exists('channel', $config))
-        {
-            $definition->addMethodCall('setChannel', array($config['channel']));
-        }
     }
 }

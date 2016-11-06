@@ -9,7 +9,10 @@
 
 namespace Creatissimo\MattermostBundle\EventListener;
 
+use Creatissimo\MattermostBundle\Services\AttachmentHelper;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpFoundation\Request;
+use Creatissimo\MattermostBundle\Entity\AttachmentField;
 use Creatissimo\MattermostBundle\Services\MattermostService;
 use Creatissimo\MattermostBundle\Services\ExceptionHelper;
 
@@ -22,16 +25,23 @@ class KernelExceptionListener
     /** @var ExceptionHelper */
     private $exceptionHelper;
 
-    /** @var \Exception $exception */
+    /** @var AttachmentHelper */
+    private $attachmentHelper;
+
+    /** @var \Exception */
     private $exception;
+
+    /** @var  Request */
+    private $request;
 
     /**
      * @param MattermostService  $mmService
      */
-    public function __construct(MattermostService $mmService, ExceptionHelper $exceptionHelper)
+    public function __construct(MattermostService $mmService, ExceptionHelper $exceptionHelper, AttachmentHelper $attachmentHelper)
     {
         $this->mmService = $mmService;
         $this->exceptionHelper = $exceptionHelper;
+        $this->attachmentHelper = $attachmentHelper;
     }
 
     /**
@@ -41,12 +51,15 @@ class KernelExceptionListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $this->exception = $event->getException();
-        if ($this->exceptionHelper->shouldProcessException($this->exception))
-        {
-            $this->postToMattermost();
+        if($this->mmService->isEnabled('exception')) {
+            $this->exception = $event->getException();
+            if ($this->exceptionHelper->shouldProcessException($this->exception)) {
+                $this->request = $event->getRequest();
+                $this->postToMattermost();
+            }
+
+            return;
         }
-        return;
     }
 
     /**
@@ -54,7 +67,8 @@ class KernelExceptionListener
      */
     protected function postToMattermost()
     {
-        $this->exceptionHelper->formatExceptionForMessage($this->exception);
-        $this->mmService->sendMessage();
+        $message = $this->exceptionHelper->convertExceptionToMessage($this->exception);
+        $message->addAttachment($this->attachmentHelper->convertRequestToAttachment($this->request));
+        $this->mmService->setMessage($message, true)->sendMessage();
     }
 }

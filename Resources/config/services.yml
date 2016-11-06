@@ -1,9 +1,31 @@
 services:
+    mattermost.service:
+        class: Creatissimo\MattermostBundle\Services\MattermostService
+        arguments:
+            - %kernel.environment%
+            - @logger
+
+
+    mattermost.attachment.helper:
+        class: Creatissimo\MattermostBundle\Services\AttachmentHelper
+        arguments:
+            - @mattermost.console.helper
+
+    mattermost.console.helper:
+            class: Creatissimo\MattermostBundle\Services\ConsoleHelper
+
+    mattermost.exception.helper:
+        class: Creatissimo\MattermostBundle\Services\ExceptionHelper
+        arguments:
+            - @mattermost.service
+
+
     mattermost.listener.kernel_exception:
         class: Creatissimo\MattermostBundle\EventListener\KernelExceptionListener
         arguments:
             - @mattermost.service
             - @mattermost.exception.helper
+            - @mattermost.attachment.helper
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
 
@@ -12,16 +34,14 @@ services:
         arguments:
             - @mattermost.service
             - @mattermost.exception.helper
+            - @mattermost.attachment.helper
         tags:
             - { name: kernel.event_listener, event: console.exception }
 
-    mattermost.service:
-        class: Creatissimo\MattermostBundle\Services\MattermostService
-        arguments:
-            - %kernel.environment%
-            - @logger
-
-    mattermost.exception.helper:
-        class: Creatissimo\MattermostBundle\Services\ExceptionHelper
+    mattermost.listener.command_terminate:
+        class: Creatissimo\MattermostBundle\EventListener\ConsoleTerminateListener
         arguments:
             - @mattermost.service
+            - @mattermost.attachment.helper
+        tags:
+            - { name: kernel.event_listener, event: console.terminate }

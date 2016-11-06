@@ -9,9 +9,17 @@
 
 namespace Creatissimo\MattermostBundle\Services;
 
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Creatissimo\MattermostBundle\Entity\Message;
 
+/**
+ * Class MattermostService
+ * @package Creatissimo\MattermostBundle\Services
+ */
 class MattermostService
 {
     /** @var string */
@@ -26,25 +34,17 @@ class MattermostService
     /** @var string */
     private $appname;
 
-    /** @var string */
-    private $icon;
-
-    /** @var string */
-    private $username;
-
-    /** @var string */
-    private $channel;
-
-    /** @var string */
-    private $text;
-
     /** @var array */
-    private $attachments;
+    private $configuration;
 
     /** @var array */
     private $environmentConfigurations;
 
+    /** @var Message */
+    private $message;
+
     /**
+     * @param Message $message
      * @param $environment
      * @param LoggerInterface $looger
      */
@@ -52,21 +52,55 @@ class MattermostService
     {
         $this->logger = $logger;
         $this->setEnvironment($environment);
-        $this->processEnvironment();
     }
 
     /**
-     * @param String $text
-     * @param String|null $channel
-     * @param String|null $username
-     * @param String|null $icon
+     * @param Message $message
+     * @param boolean $setEnvironmentToMessage
+     *
+     * @return $this
      */
-    public function setMessage($text, $channel=NULL, $username=NULL, $icon=NULL)
+    public function setMessage(Message $message, $setEnvironmentToMessage=false)
     {
-        $this->setText($text);
-        if($channel) $this->setChannel($channel);
-        if($username) $this->setUsername($username);
-        if($icon) $this->setIcon($icon);
+        $this->message = $message;
+        if($setEnvironmentToMessage) $this->setDefaultsToMessage();
+
+        return $this;
+    }
+
+    /**
+     * @return Message
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param bool $force
+     *
+     * @return $this
+     */
+    public function setDefaultsToMessage($force=false)
+    {
+        if($this->message) {
+            $conf = $this->getConfiguration();
+            if ($conf && is_array($conf)) {
+                if (array_key_exists('username', $conf) && ($force OR (!$force && !$this->message->getUsername()))) {
+                    $this->message->setUsername($conf['username']);
+                }
+
+                if (array_key_exists('iconUrl', $conf) && ($force OR (!$force && !$this->message->getIconUrl()))) {
+                    $this->message->setIconUrl($conf['iconUrl']);
+                }
+
+                if (array_key_exists('channel', $conf) && ($force OR (!$force && !$this->message->getChannel()))) {
+                    $this->message->setChannel($conf['channel']);
+                }
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -74,43 +108,50 @@ class MattermostService
      *
      * @return null|string
      */
-    protected function buildMessage()
+    protected function serializeMessage()
     {
-        if (!$this->getText()) return false;
+        if (!$this->message) return false;
 
-        $json = null;
-        $message = [ 'text' => $this->getText() ];
+        $messageArray = ['text' => $this->message->getText()];
 
-        if ($this->getChannel()) {
-            $message[ 'channel'] = $this->getChannel();
+        if($this->message->getChannel()) $messageArray['channel'] = $this->message->getChannel();
+        if($this->message->getUsername()) $messageArray['username'] = $this->message->getUsername();
+        if($this->message->getIconUrl()) $messageArray['icon_url'] = $this->message->getIconUrl();
+
+        if($this->message->hasAttachments()) {
+            foreach($this->message->getAttachments() as $attachment) {
+                $attachmentArray = ['title' => $attachment->getTitle()];
+                if($attachment->getFallback()) $attachmentArray['fallback'] = $attachment->getFallback();
+                if($attachment->getColor()) $attachmentArray['color'] = $attachment->getColor();
+                if($attachment->getPretext()) $attachmentArray['pretext'] = $attachment->getPretext();
+
+                if($attachment->hasFields()) {
+                    foreach($attachment->getFields() as $field) {
+                        $attachmentArray['fields'][] = [
+                            'title' => $field->getTitle(),
+                            'value' => $field->getValue(),
+                            'short' => $field->getShort()
+                        ];
+                    }
+                }
+
+                $messageArray['attachments'][] = $attachmentArray;
+            }
         }
 
-        if ($this->getIcon()) {
-            $message['icon_url'] = $this->getIcon();
-        }
-
-        if ($this->getUsername()) {
-            $message['username'] = $this->getUsername();
-        }
-
-        if ($this->getAttachments() && (count($this->getAttachments()) > 0)) {
-            $message['attachments'] = $this->getAttachments();
-        }
-
-        $json = json_encode($message);
-        return $json;
+        return json_encode($messageArray);
     }
 
     /**
      * Do an HTTP post to Mattermost
      *
-     * @param $url
-     * @param null $body
      * @return bool
      */
     public function sendMessage()
     {
-        if (!$this->getText()) return false;
+        if (!$this->getMessage()) return false;
+
+        $this->processEnvironment();
 
         $ch = curl_init();
         if (!$ch) {
@@ -118,7 +159,7 @@ class MattermostService
             return false;
         }
         $url = $this->getWebhook();
-        $message = $this->buildMessage();
+        $message = $this->serializeMessage();
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -141,18 +182,9 @@ class MattermostService
         return true;
     }
 
-    protected function processEnvironment()
-    {
-        $environmentConf = $this->getEnvironmentConfiguration();
-        if($environmentConf && is_array($environmentConf)) {
-            if (array_key_exists('webhook', $environmentConf)) $this->setWebhook($environmentConf['webhook']);
-            if (array_key_exists('appname', $environmentConf)) $this->setAppname($environmentConf['appname']);
-            if (array_key_exists('botname', $environmentConf)) $this->setUsername($environmentConf['botname']);
-            if (array_key_exists('icon', $environmentConf)) $this->setIcon($environmentConf['icon']);
-            if (array_key_exists('channel', $environmentConf)) $this->setChannel($environmentConf['channel']);
-        }
-    }
-
+    /**
+     * @param $message
+     */
     protected function log($message)
     {
         if (!empty($this->logger)) {
@@ -170,10 +202,14 @@ class MattermostService
 
     /**
      * @param string $environment
+     *
+     * @return $this
      */
     public function setEnvironment($environment)
     {
         $this->environment = $environment;
+
+        return $this;
     }
 
     /**
@@ -186,10 +222,14 @@ class MattermostService
 
     /**
      * @param string $webhook
+     *
+     * @return $this
      */
     public function setWebhook($webhook)
     {
         $this->webhook = $webhook;
+
+        return $this;
     }
 
     /**
@@ -202,98 +242,14 @@ class MattermostService
 
     /**
      * @param string $appname
+     *
+     * @return $this
      */
     public function setAppname($appname)
     {
         $this->appname = $appname;
-    }
 
-    /**
-     * @return string
-     */
-    public function getIcon()
-    {
-        return $this->icon;
-    }
-
-    /**
-     * @param string $icon
-     */
-    public function setIcon($icon)
-    {
-        $this->icon = $icon;
-    }
-
-    /**
-     * @return string
-     */
-    public function getChannel()
-    {
-        return $this->channel;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setChannel($channel)
-    {
-        $this->channel = $channel;
-    }
-
-    /**
-     * @return string
-     */
-    public function getText()
-    {
-        return $this->text;
-    }
-
-    /**
-     * @param string $text
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * @param string $username
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAttachments()
-    {
-        return $this->attachments;
-    }
-
-    /**
-     * @param array $attachments
-     */
-    public function setAttachments($attachments)
-    {
-        $this->attachments = $attachments;
-    }
-
-    /**
-     * @param array $attachment
-     */
-    public function addttachment($attachment)
-    {
-        $this->attachments[] = $attachment;
+        return $this;
     }
 
     /**
@@ -318,5 +274,67 @@ class MattermostService
     public function getEnvironmentConfiguration()
     {
         return $this->environmentConfigurations[$this->getEnvironment()];
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
+    /**
+     * @param array
+     */
+    public function setConfiguration($conf)
+    {
+        $this->configuration = $conf;
+
+        return $this;
+    }
+
+    private function processEnvironment()
+    {
+        $config = $this->getEnvironmentConfiguration();
+        if (!empty($config))
+        {
+            $names = ['webhook', 'appname'];
+            foreach($names as $name) {
+                if (array_key_exists($name, $config)) {
+                    $funcName = "set".ucfirst($name);
+                    $this->$funcName($config[$name]);
+                }
+            }
+
+            $names = ['username', 'channel', 'iconUrl'];
+            foreach($names as $name) {
+                if (array_key_exists($name, $config)) {
+                    $funcName = "set".ucfirst($name);
+                    $this->message->$funcName($config[$name]);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * @param string|null $function
+     *
+     * @return bool
+     */
+    public function isEnabled($function=null)
+    {
+        $enabled = false;
+        $config = $this->getEnvironmentConfiguration();
+
+        if (!empty($config)) {
+            if($config['enable']) $enabled = true;
+
+            if($function && array_key_exists($function, $config) && array_key_exists('enable', $config[$function]) && !$config[$function]['enable']) {
+                $enabled = false;
+            }
+        }
+        return $enabled;
     }
 }

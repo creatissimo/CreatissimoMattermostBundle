@@ -3,17 +3,29 @@
  
  Example configuration:
  
- 
     creatissimo_mattermost:
-     webhook: "https://chat.xyz.com/hooks/xxxxxxxxxxxxxx"
-     botname: "Bot User"
-     appname: "My App"
-     channel: "exceptions"
-     icon: "https://xyz.com/icon.png"
-     environments:
-         dev:
-             enabled: true
-             channel: "dev-exceptions"
-         prod:
-             exclude_exception:
-                 - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+        webhook: https://chat.xym.com/asdasd
+        appname: "My App"
+        username: "App Bot"
+        channel: "exceptions"
+        iconUrl: "https://www.xym.com/logo.png"
+        environments:
+            dev:
+                appname: "Dev App Name"
+                username: "Dev Bot"
+                enable: true
+                terminate:
+                    enable: true
+                    exclude_exitcode: [0]
+                exception:
+                    enable: true
+    
+            prod:
+                enable: true
+                terminate:
+                    enable: true
+                    exclude_exitcode: [0]
+                exception:
+                    enable: true
+                    exclude_class:
+                        - Symfony\Component\HttpKernel\Exception\NotFoundHttpException

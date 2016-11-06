@@ -10,8 +10,11 @@
 namespace Creatissimo\MattermostBundle\EventListener;
 
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
-use Creatissimo\MattermostBundle\Services\MattermostService;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Creatissimo\MattermostBundle\Services\AttachmentHelper;
 use Creatissimo\MattermostBundle\Services\ExceptionHelper;
+use Creatissimo\MattermostBundle\Services\MattermostService;
 
 class ConsoleExceptionListener
 {
@@ -24,13 +27,20 @@ class ConsoleExceptionListener
     /** @var \Exception $exception */
     private $exception;
 
+    /** @var Command $command */
+    private $command;
+
+    /** @var InputInterface $input */
+    private $input;
+
     /**
      * @param MattermostService  $mmService
      */
-    public function __construct(MattermostService $mmService, ExceptionHelper $exceptionHelper)
+    public function __construct(MattermostService $mmService, ExceptionHelper $exceptionHelper, AttachmentHelper $attachmentHelper)
     {
         $this->mmService = $mmService;
         $this->exceptionHelper = $exceptionHelper;
+        $this->attachmentHelper = $attachmentHelper;
     }
 
     /**
@@ -40,13 +50,16 @@ class ConsoleExceptionListener
      */
     public function onConsoleException(ConsoleExceptionEvent $event)
     {
-        $this->command = $event->getCommand();
-        $this->exception = $event->getException();
-        if ($this->exceptionHelper->shouldProcessException($this->exception))
-        {
-            $this->postToMattermost();
+        if($this->mmService->isEnabled('exception')) {
+            $this->exception = $event->getException();
+            if ($this->exceptionHelper->shouldProcessException($this->exception)) {
+                $this->command = $event->getCommand();
+                $this->input   = $event->getInput();
+                $this->postToMattermost();
+            }
+
+            return;
         }
-        return;
     }
 
     /**
@@ -54,7 +67,11 @@ class ConsoleExceptionListener
      */
     protected function postToMattermost()
     {
-        $this->exceptionHelper->formatExceptionForMessage($this->exception, $this->command->getName());
-        $this->mmService->sendMessage();
+        $message = $this->exceptionHelper->convertExceptionToMessage($this->exception);
+
+        $attachment = $this->attachmentHelper->convertCommandToAttachment($this->command, $this->input);
+        $message->addAttachment($attachment);
+
+        $this->mmService->setMessage($message, true)->sendMessage();
     }
 }
