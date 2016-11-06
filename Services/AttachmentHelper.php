@@ -49,8 +49,10 @@ class AttachmentHelper
             $attachment->addField(new AttachmentField('User', $request->getUser(), true));
             $attachment->addField(new AttachmentField('User info', $request->getUserInfo(), true));
         }
-        if(!empty($headers->get('referer'))) $attachment->addField(new AttachmentField('Referer', $headers->get('referer')));
-        if(!empty($headers->get('user-agent'))) $attachment->addField(new AttachmentField('User-Agent', $headers->get('user-agent')));
+        $referer = $headers->get('referer');
+        if(!empty($referer)) $attachment->addField(new AttachmentField('Referer', $referer));
+        $userAgent = $headers->get('user-agent');
+        if(!empty($userAgent)) $attachment->addField(new AttachmentField('User-Agent', $userAgent));
         $attachment->addField(new AttachmentField('Request', $request->__toString()));
 
         return $attachment;
@@ -69,8 +71,9 @@ class AttachmentHelper
 
         $attachment->addField(new AttachmentField('Command', $command->getName()));
 
-        if(!empty($input->__toString())) {
-            $attachment->addField(new AttachmentField('Input', $input->__toString()));
+        $inputStr = $input->__toString();
+        if(!empty($inputStr)) {
+            $attachment->addField(new AttachmentField('Input', $inputStr));
         }
 
         if($argumentString = $this->consoleHelper->argumentsToString($input)) {
