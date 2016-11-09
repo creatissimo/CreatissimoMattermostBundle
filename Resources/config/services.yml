@@ -3,7 +3,6 @@ services:
         class: Creatissimo\MattermostBundle\Services\MattermostService
         arguments:
             - %kernel.environment%
-            - @mattermost.exception.helper
             - @logger
 
 

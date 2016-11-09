@@ -25,9 +25,6 @@ class MattermostService
     /** @var string */
     private $environment;
 
-    /** @var ExceptionHelper */
-    private $exceptionHelper;
-
     /** @var LoggerInterface */
     private $logger;
 
@@ -47,13 +44,11 @@ class MattermostService
     private $message;
 
     /**
-     * @param ExceptionHelper $exceptionHelper
      * @param $environment
      * @param LoggerInterface $looger
      */
-    public function __construct($environment, ExceptionHelper $exceptionHelper, LoggerInterface $logger)
+    public function __construct($environment, LoggerInterface $logger)
     {
-        $this->exceptionHelper = $exceptionHelper;
         $this->logger = $logger;
         $this->setEnvironment($environment);
     }
@@ -184,18 +179,6 @@ class MattermostService
             return false;
         }
         return true;
-    }
-
-    /**
-     * @var \Exception $exception
-     * @var string $source
-     *
-     * @return bool
-     */
-    public function sendException(\Exception $exception, $source=null)
-    {
-        $message = $this->exceptionHelper->convertExceptionToMessage($exception, $source);
-        return $this->setMessage($message)->sendMessage();
     }
 
     /**

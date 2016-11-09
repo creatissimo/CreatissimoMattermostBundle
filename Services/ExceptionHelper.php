@@ -68,6 +68,19 @@ class ExceptionHelper
         return $mmMessage;
     }
 
+
+    /**
+     * @var \Exception $exception
+     * @var string $source
+     *
+     * @return bool
+     */
+    public function sendException(\Exception $exception, $source=null)
+    {
+        $message = $this->convertExceptionToMessage($exception, $source);
+        return $this->mmService->setMessage($message)->sendMessage();
+    }
+
     /**
      * Check to see if this exception is in an exclude list
      *
