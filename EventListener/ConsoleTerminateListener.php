@@ -73,7 +73,7 @@ class ConsoleTerminateListener
         $attachment = $this->attachmentHelper->convertCommandToAttachment($this->command, $this->input);
         $message->addAttachment($attachment);
 
-        $this->mmService->setMessage($message)->sendMessage();
+        $this->mmService->setMessage($message)->send();
     }
 
 

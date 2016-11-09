@@ -78,7 +78,7 @@ class ExceptionHelper
     public function sendException(\Exception $exception, $source=null)
     {
         $message = $this->convertExceptionToMessage($exception, $source);
-        return $this->mmService->setMessage($message)->sendMessage();
+        return $this->mmService->setMessage($message)->send();
     }
 
     /**

@@ -142,11 +142,25 @@ class MattermostService
     }
 
     /**
+     * @var string $text
+     *
+     * @return bool
+     */
+    public function sendMessage($text)
+    {
+        if(!empty($text)) {
+            return $this->setMessage(new Message($text))->send();
+        }
+
+        return false;
+    }
+
+    /**
      * Do an HTTP post to Mattermost
      *
      * @return bool
      */
-    public function sendMessage()
+    public function send()
     {
         if (!$this->getMessage()) return false;
 

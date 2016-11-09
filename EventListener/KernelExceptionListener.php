@@ -69,6 +69,6 @@ class KernelExceptionListener
     {
         $message = $this->exceptionHelper->convertExceptionToMessage($this->exception);
         $message->addAttachment($this->attachmentHelper->convertRequestToAttachment($this->request));
-        $this->mmService->setMessage($message)->sendMessage();
+        $this->mmService->setMessage($message)->send();
     }
 }
