@@ -59,7 +59,7 @@ class MattermostService
      *
      * @return $this
      */
-    public function setMessage(Message $message, $setEnvironmentToMessage=false)
+    public function setMessage(Message $message, $setEnvironmentToMessage=true)
     {
         $this->message = $message;
         if($setEnvironmentToMessage) $this->setDefaultsToMessage();
