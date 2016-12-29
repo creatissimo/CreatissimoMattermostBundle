@@ -282,11 +282,11 @@ class MattermostService
     }
 
     /**
-     * @return array
+     * @return array|null
      */
     public function getEnvironmentConfiguration()
     {
-        return $this->environmentConfigurations[$this->getEnvironment()];
+        return (array_key_exists($this->getEnvironment(), $this->environmentConfigurations)) ? $this->environmentConfigurations[$this->getEnvironment()] : null;
     }
 
     /**

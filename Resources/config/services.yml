@@ -2,14 +2,14 @@ services:
     mattermost.service:
         class: Creatissimo\MattermostBundle\Services\MattermostService
         arguments:
-            - %kernel.environment%
-            - @logger
+            - '%kernel.environment%'
+            - '@logger'
 
 
     mattermost.attachment.helper:
         class: Creatissimo\MattermostBundle\Services\AttachmentHelper
         arguments:
-            - @mattermost.console.helper
+            - '@mattermost.console.helper'
 
     mattermost.console.helper:
             class: Creatissimo\MattermostBundle\Services\ConsoleHelper
@@ -17,31 +17,31 @@ services:
     mattermost.exception.helper:
         class: Creatissimo\MattermostBundle\Services\ExceptionHelper
         arguments:
-            - @mattermost.service
+            - '@mattermost.service'
 
 
     mattermost.listener.kernel_exception:
         class: Creatissimo\MattermostBundle\EventListener\KernelExceptionListener
         arguments:
-            - @mattermost.service
-            - @mattermost.exception.helper
-            - @mattermost.attachment.helper
+            - '@mattermost.service'
+            - '@mattermost.exception.helper'
+            - '@mattermost.attachment.helper'
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
 
     mattermost.listener.command_exception:
         class: Creatissimo\MattermostBundle\EventListener\ConsoleExceptionListener
         arguments:
-            - @mattermost.service
-            - @mattermost.exception.helper
-            - @mattermost.attachment.helper
+            - 'mattermost.service'
+            - '@mattermost.exception.helper'
+            - '@mattermost.attachment.helper'
         tags:
             - { name: kernel.event_listener, event: console.exception }
 
     mattermost.listener.command_terminate:
         class: Creatissimo\MattermostBundle\EventListener\ConsoleTerminateListener
         arguments:
-            - @mattermost.service
-            - @mattermost.attachment.helper
+            - '@mattermost.service'
+            - '@mattermost.attachment.helper'
         tags:
             - { name: kernel.event_listener, event: console.terminate }
