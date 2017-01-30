@@ -32,7 +32,7 @@ services:
     mattermost.listener.command_exception:
         class: Creatissimo\MattermostBundle\EventListener\ConsoleExceptionListener
         arguments:
-            - 'mattermost.service'
+            - '@mattermost.service'
             - '@mattermost.exception.helper'
             - '@mattermost.attachment.helper'
         tags:
