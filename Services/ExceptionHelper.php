@@ -96,7 +96,8 @@ class ExceptionHelper
     {
         $config = $this->mmService->getEnvironmentConfiguration();
         if (!empty($config) && array_key_exists('exception', $config)) {
-            if ($config['trace']) {
+            $exceptionConf = $config['exception'];
+            if (array_key_exists('trace', $exceptionConf) && $exceptionConf['trace']) {
                 return true;
             }
         }
