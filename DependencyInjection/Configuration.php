@@ -69,6 +69,7 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('exception')
                                 ->children()
                                     ->booleanNode('enable')->defaultTrue()->end()
+                                    ->booleanNode('trace')->defaultTrue()->end()
                                     ->arrayNode('exclude_class')
                                         ->prototype('scalar')->end()
                                     ->end()
