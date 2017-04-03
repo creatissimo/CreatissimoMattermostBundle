@@ -9,12 +9,11 @@
 
 namespace Creatissimo\MattermostBundle\EventListener;
 
-use Creatissimo\MattermostBundle\Services\AttachmentHelper;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Request;
-use Creatissimo\MattermostBundle\Entity\AttachmentField;
-use Creatissimo\MattermostBundle\Services\MattermostService;
+use Creatissimo\MattermostBundle\Services\AttachmentHelper;
 use Creatissimo\MattermostBundle\Services\ExceptionHelper;
+use Creatissimo\MattermostBundle\Services\MattermostService;
 
 
 class KernelExceptionListener

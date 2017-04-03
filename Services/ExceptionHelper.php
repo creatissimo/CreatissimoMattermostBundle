@@ -20,7 +20,7 @@ class ExceptionHelper
     private $mmService;
 
     /**
-     * @param MattermostService  $mmService
+     * @param MattermostService $mmService
      */
     public function __construct(MattermostService $mmService)
     {
@@ -30,30 +30,30 @@ class ExceptionHelper
     /**
      * Format the JSON message to post to Mattermost
      *
-     * @param \Exception $exception
+     * @param \Exception  $exception
      * @param String|null $source
      *
      * @return Message $mmMessage
      */
-    public function convertExceptionToMessage(\Exception $exception, $source=NULL)
+    public function convertExceptionToMessage(\Exception $exception, $source = null, $trace = false)
     {
-        $code = $exception->getCode();
-        $message = $exception->getMessage();
-        $file = $exception->getFile();
-        $line = $exception->getLine();
+        $code          = $exception->getCode();
+        $message       = $exception->getMessage();
+        $file          = $exception->getFile();
+        $line          = $exception->getLine();
         $fullClassName = get_class($exception);
-        $className = preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $fullClassName);
-        $now = new \DateTime();
+        $className     = preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $fullClassName);
+        $now           = new \DateTime();
 
         $text = "#### ";
         $text .= $className . ' thrown in ' . $this->mmService->getAppName();
-        if($source) $text .= " @ \n".$source;
+        if ($source) $text .= " @ \n" . $source;
 
         $mmMessage = new Message($text);
 
         $attachment = new Attachment($fullClassName);
         $attachment->setColor(ExceptionConstant::EXCEPTION_COLOR)
-            ->setFallback($message);
+                   ->setFallback($message);
 
         $attachment->addField(new AttachmentField('Message', $message));
         $attachment->addField(new AttachmentField('File', $file));
@@ -63,6 +63,10 @@ class ExceptionHelper
         $attachment->addField(new AttachmentField('Environment', $this->mmService->getEnvironment(), true));
         $attachment->addField(new AttachmentField('Timestamp', $now->format(DATE_ISO8601), true));
 
+        if ($trace || $this->shouldAddTrace()) {
+            $attachment->addField(new AttachmentField('Trace', $exception->getTraceAsString()));
+        }
+
         $mmMessage->addAttachment($attachment);
 
         return $mmMessage;
@@ -71,14 +75,33 @@ class ExceptionHelper
 
     /**
      * @var \Exception $exception
-     * @var string $source
+     * @var string     $source
+     * @var bool       $trace
      *
      * @return bool
      */
-    public function sendException(\Exception $exception, $source=null)
+    public function sendException(\Exception $exception, $source = null, $trace = false)
     {
-        $message = $this->convertExceptionToMessage($exception, $source);
+        $message = $this->convertExceptionToMessage($exception, $source, $trace);
+
         return $this->mmService->setMessage($message)->send();
+    }
+
+    /**
+     * Check if trace should be added
+     *
+     * @return bool
+     */
+    public function shouldAddTrace()
+    {
+        $config = $this->mmService->getEnvironmentConfiguration();
+        if (!empty($config) && array_key_exists('exception', $config)) {
+            if ($config['trace']) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -91,22 +114,21 @@ class ExceptionHelper
     public function shouldProcessException(\Exception $exception)
     {
         $shouldProcess = true;
-        $config = $this->mmService->getEnvironmentConfiguration();
+        $config        = $this->mmService->getEnvironmentConfiguration();
         if (!empty($config) && array_key_exists('exception', $config)) {
             $exceptionConf = $config['exception'];
-            if(array_key_exists('exclude_class', $exceptionConf)) {
-                $className = get_class($exception);
+            if (array_key_exists('exclude_class', $exceptionConf)) {
+                $className   = get_class($exception);
                 $excludeList = $exceptionConf['exclude_class'];
-                foreach ($excludeList as $exclude)
-                {
-                    if ($exclude == $className)
-                    {
+                foreach ($excludeList as $exclude) {
+                    if ($exclude == $className) {
                         $shouldProcess = false;
                         break;
                     }
                 }
             }
         }
+
         return $shouldProcess;
     }
 }
