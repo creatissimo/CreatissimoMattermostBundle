@@ -19,6 +19,7 @@
                     exclude_exitcode: [0]
                 exception:
                     enable: true
+                    trace: true
     
             prod:
                 enable: true
@@ -27,5 +28,6 @@
                     exclude_exitcode: [0]
                 exception:
                     enable: true
+                    trace: true
                     exclude_class:
                         - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
