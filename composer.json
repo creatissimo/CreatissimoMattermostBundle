@@ -1,6 +1,6 @@
 {
   "name" : "creatissimo/mattermost-bundle",
-  "description" : "Symfony2 Bundle for communicating with the Mattermost chat",
+  "description" : "Symfony Bundle for communicating with the Mattermost chat, sending messages on exceptions or when triggered by code",
   "keywords" : [
     "exception", "mattermost"
   ],
@@ -15,7 +15,7 @@
   ],
   "require" : {
     "php": ">=5.3.2",
-    "symfony/framework-bundle": "2.*"
+    "symfony/framework-bundle": ">=2.*"
   },
   "autoload" : {
     "psr-4" : {
