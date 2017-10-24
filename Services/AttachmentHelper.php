@@ -53,6 +53,10 @@ class AttachmentHelper
         if(!empty($referer)) $attachment->addField(new AttachmentField('Referer', $referer));
         $userAgent = $headers->get('user-agent');
         if(!empty($userAgent)) $attachment->addField(new AttachmentField('User-Agent', $userAgent));
+        $data = $request->request->all();
+        foreach($data as $key => $value) {
+            $attachment->addField(new AttachmentField($key, $value, true));
+        }
         $attachment->addField(new AttachmentField('Request', $request->__toString()));
 
         return $attachment;
