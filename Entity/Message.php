@@ -21,7 +21,7 @@ class Message
     private $text;
 
     /** @var array */
-    private $attachments;
+    private $attachments = [];
 
     /**
      * Message constructor.
