@@ -1,10 +1,10 @@
 services:
     mattermost.service:
         class: Creatissimo\MattermostBundle\Services\MattermostService
+        public: true
         arguments:
             - '%kernel.environment%'
             - '@logger'
-
 
     mattermost.attachment.helper:
         class: Creatissimo\MattermostBundle\Services\AttachmentHelper
@@ -12,13 +12,13 @@ services:
             - '@mattermost.console.helper'
 
     mattermost.console.helper:
-            class: Creatissimo\MattermostBundle\Services\ConsoleHelper
+        class: Creatissimo\MattermostBundle\Services\ConsoleHelper
 
     mattermost.exception.helper:
         class: Creatissimo\MattermostBundle\Services\ExceptionHelper
+        public: true
         arguments:
             - '@mattermost.service'
-
 
     mattermost.listener.kernel_exception:
         class: Creatissimo\MattermostBundle\EventListener\KernelExceptionListener
