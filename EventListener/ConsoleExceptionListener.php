@@ -9,12 +9,12 @@
 
 namespace Creatissimo\MattermostBundle\EventListener;
 
-use Symfony\Component\Console\Event\ConsoleExceptionEvent;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Creatissimo\MattermostBundle\Services\AttachmentHelper;
 use Creatissimo\MattermostBundle\Services\ExceptionHelper;
 use Creatissimo\MattermostBundle\Services\MattermostService;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Event\ConsoleExceptionEvent;
+use Symfony\Component\Console\Input\InputInterface;
 
 class ConsoleExceptionListener
 {
@@ -23,6 +23,9 @@ class ConsoleExceptionListener
 
     /** @var ExceptionHelper */
     private $exceptionHelper;
+
+    /** @var AttachmentHelper */
+    private $attachmentHelper;
 
     /** @var \Exception $exception */
     private $exception;
@@ -34,12 +37,14 @@ class ConsoleExceptionListener
     private $input;
 
     /**
-     * @param MattermostService  $mmService
+     * @param MattermostService $mmService
+     * @param ExceptionHelper   $exceptionHelper
+     * @param AttachmentHelper  $attachmentHelper
      */
     public function __construct(MattermostService $mmService, ExceptionHelper $exceptionHelper, AttachmentHelper $attachmentHelper)
     {
-        $this->mmService = $mmService;
-        $this->exceptionHelper = $exceptionHelper;
+        $this->mmService        = $mmService;
+        $this->exceptionHelper  = $exceptionHelper;
         $this->attachmentHelper = $attachmentHelper;
     }
 
@@ -50,7 +55,7 @@ class ConsoleExceptionListener
      */
     public function onConsoleException(ConsoleExceptionEvent $event)
     {
-        if($this->mmService->isEnabled('exception')) {
+        if ($this->mmService->isEnabled('exception')) {
             $this->exception = $event->getException();
             if ($this->exceptionHelper->shouldProcessException($this->exception)) {
                 $this->command = $event->getCommand();

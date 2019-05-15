@@ -1,4 +1,5 @@
 <?php
+
 namespace Creatissimo\MattermostBundle\Entity;
 
 /**
@@ -158,6 +159,8 @@ class Attachment
      * Add field
      *
      * @param AttachmentField $field
+     *
+     * @return self
      */
     public function addField(AttachmentField $field)
     {
@@ -173,6 +176,6 @@ class Attachment
      */
     public function hasFields()
     {
-        return (count($this->fields) > 0) ? true : false;
+        return count($this->fields) > 0;
     }
 }

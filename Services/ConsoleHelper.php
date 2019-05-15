@@ -9,7 +9,6 @@
 
 namespace Creatissimo\MattermostBundle\Services;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
@@ -26,16 +25,18 @@ class ConsoleHelper
     public function argumentsToString(InputInterface $input)
     {
         $argumentString = null;
-        $argumentArray = [];
+        $argumentArray  = [];
         $arguments      = $input->getArguments();
         if (is_array($arguments) && count($arguments) > 0) {
-            foreach($arguments as $name => $value) {
+            foreach ($arguments as $name => $value) {
                 if (is_bool($value)) {
-                    $value = ($value) ? "true" : "false";
+                    $value = $this->convertBoolToSting($value);
                 }
-                $argumentArray[] = $name . ": " . $value;
+                $argumentArray[] = $name . ': ' . $value;
             }
-            if (count($argumentArray) > 0) $argumentString = implode("\n", $argumentArray);
+            if (count($argumentArray) > 0) {
+                $argumentString = implode("\n", $argumentArray);
+            }
         }
 
         return $argumentString;
@@ -52,15 +53,22 @@ class ConsoleHelper
         $optionArray  = [];
         $options      = $input->getArguments();
         if (is_array($options) && count($options) > 0) {
-            foreach($options as $name => $value) {
-                if(is_bool($value)) {
-                    $value = ($value) ? "true" : "false";
+            foreach ($options as $name => $value) {
+                if (is_bool($value)) {
+                    $value = $this->convertBoolToSting($value);
                 }
-                $optionArray[] =  $name.": ".$value;
+                $optionArray[] = $name . ': ' . $value;
             }
-            if (count($optionArray) > 0) $optionString = implode("\n", $optionArray);
+            if (count($optionArray) > 0) {
+                $optionString = implode("\n", $optionArray);
+            }
         }
 
         return $optionString;
+    }
+
+    private function convertBoolToSting($value)
+    {
+        return $value ? 'true' : 'false';
     }
 }

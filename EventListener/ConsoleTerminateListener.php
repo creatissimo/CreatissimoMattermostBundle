@@ -9,17 +9,20 @@
 
 namespace Creatissimo\MattermostBundle\EventListener;
 
-use Symfony\Component\Console\Event\ConsoleTerminateEvent;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Creatissimo\MattermostBundle\Entity\Message;
-use Creatissimo\MattermostBundle\Services\MattermostService;
 use Creatissimo\MattermostBundle\Services\AttachmentHelper;
+use Creatissimo\MattermostBundle\Services\MattermostService;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
+use Symfony\Component\Console\Input\InputInterface;
 
 class ConsoleTerminateListener
 {
     /** @var MattermostService */
     private $mmService;
+
+    /** @var AttachmentHelper */
+    private $attachmentHelper;
 
     /** @var Command $command */
     private $command;
@@ -49,7 +52,7 @@ class ConsoleTerminateListener
      */
     public function onConsoleTerminate(ConsoleTerminateEvent $event)
     {
-        if($this->mmService->isEnabled('terminate')) {
+        if ($this->mmService->isEnabled('terminate')) {
             $config = $this->mmService->getEnvironmentConfiguration();
             if (!empty($config)) {
                 $this->exitCode = $event->getExitCode();
@@ -68,7 +71,7 @@ class ConsoleTerminateListener
      */
     protected function postToMattermost()
     {
-        $message = new Message("Command has been terminated; ExitCode: ".$this->exitCode);
+        $message = new Message('Command has been terminated; ExitCode: ' . $this->exitCode);
 
         $attachment = $this->attachmentHelper->convertCommandToAttachment($this->command, $this->input);
         $message->addAttachment($attachment);
@@ -87,21 +90,20 @@ class ConsoleTerminateListener
     public function shouldProcessExitCode($exitCode)
     {
         $shouldProcess = true;
-        $config = $this->mmService->getEnvironmentConfiguration();
+        $config        = $this->mmService->getEnvironmentConfiguration();
         if (!empty($config) && array_key_exists('terminate', $config)) {
             $exceptionConf = $config['terminate'];
-            if(array_key_exists('exclude_exitcode', $exceptionConf)) {
+            if (array_key_exists('exclude_exitcode', $exceptionConf)) {
                 $excludeList = $exceptionConf['exclude_exitcode'];
-                foreach ($excludeList as $exclude)
-                {
-                    if ($exclude == $exitCode)
-                    {
+                foreach ($excludeList as $exclude) {
+                    if ($exclude == $exitCode) {
                         $shouldProcess = false;
                         break;
                     }
                 }
             }
         }
+
         return $shouldProcess;
     }
 }

@@ -30,10 +30,12 @@ class ExceptionHelper
     /**
      * Format the JSON message to post to Mattermost
      *
-     * @param \Exception  $exception
-     * @param String|null $source
+     * @param \Exception $exception
+     * @param null       $source
+     * @param bool       $trace
      *
-     * @return Message $mmMessage
+     * @return Message
+     * @throws \Exception
      */
     public function convertExceptionToMessage(\Exception $exception, $source = null, $trace = false)
     {
@@ -45,9 +47,11 @@ class ExceptionHelper
         $className     = preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $fullClassName);
         $now           = new \DateTime();
 
-        $text = "#### ";
+        $text = '#### ';
         $text .= $className . ' thrown in ' . $this->mmService->getAppName();
-        if ($source) $text .= " @ \n" . $source;
+        if ($source) {
+            $text .= " @ \n" . $source;
+        }
 
         $mmMessage = new Message($text);
 
@@ -57,11 +61,11 @@ class ExceptionHelper
 
         $attachment->addField(new AttachmentField('Message', $message));
         $attachment->addField(new AttachmentField('File', $file));
-        $attachment->addField(new AttachmentField('Line', strval($line), true));
-        $attachment->addField(new AttachmentField('Code', strval($code), true));
+        $attachment->addField(new AttachmentField('Line', (string)$line, true));
+        $attachment->addField(new AttachmentField('Code', (string)$code, true));
         $attachment->addField(new AttachmentField('System', $this->mmService->getAppName(), true));
         $attachment->addField(new AttachmentField('Environment', $this->mmService->getEnvironment(), true));
-        $attachment->addField(new AttachmentField('Timestamp', $now->format(DATE_ISO8601), true));
+        $attachment->addField(new AttachmentField('Timestamp', $now->format(DATE_ATOM), true));
 
         if ($trace || $this->shouldAddTrace()) {
             $attachment->addField(new AttachmentField('Trace', $this->getExceptionTraceAsString($exception)));
@@ -72,13 +76,13 @@ class ExceptionHelper
         return $mmMessage;
     }
 
-
     /**
-     * @var \Exception $exception
-     * @var string     $source
-     * @var bool       $trace
+     * @param \Exception $exception
+     * @param null       $source
+     * @param bool       $trace
      *
      * @return bool
+     * @throws \Exception
      */
     public function sendException(\Exception $exception, $source = null, $trace = false)
     {
@@ -133,7 +137,6 @@ class ExceptionHelper
         return $shouldProcess;
     }
 
-
     /**
      * @param \Exception $exception
      *
@@ -141,21 +144,21 @@ class ExceptionHelper
      */
     private function getExceptionTraceAsString(\Exception $exception)
     {
-        $rtn   = "";
+        $rtn   = '';
         $count = 0;
         foreach ($exception->getTrace() as $frame) {
-            $args = "";
+            $args = '';
             if (isset($frame['args'])) {
                 $args = [];
                 foreach ($frame['args'] as $arg) {
                     if (is_string($arg)) {
                         $args[] = "'" . $arg . "'";
                     } elseif (is_array($arg)) {
-                        $args[] = "Array";
-                    } elseif (is_null($arg)) {
+                        $args[] = 'Array';
+                    } elseif (null === $arg) {
                         $args[] = 'NULL';
                     } elseif (is_bool($arg)) {
-                        $args[] = ($arg) ? "true" : "false";
+                        $args[] = $arg ? 'true' : 'false';
                     } elseif (is_object($arg)) {
                         $args[] = get_class($arg);
                     } elseif (is_resource($arg)) {
@@ -164,13 +167,13 @@ class ExceptionHelper
                         $args[] = $arg;
                     }
                 }
-                $args = join(", ", $args);
+                $args = implode(', ', $args);
             }
             $rtn .= sprintf("#%s %s(%s): %s(%s)\n",
                 $count,
                 isset($frame['file']) ? $frame['file'] : 'unknown file',
                 isset($frame['line']) ? $frame['line'] : 'unknown line',
-                (isset($frame['class'])) ? $frame['class'] . $frame['type'] . $frame['function'] : $frame['function'],
+                isset($frame['class']) ? $frame['class'] . $frame['type'] . $frame['function'] : $frame['function'],
                 $args);
             $count++;
         }

@@ -5,6 +5,7 @@ namespace Creatissimo\MattermostBundle\Entity;
 /**
  * Creatissimo\MattermostBundle\Entity\AttachmentField
  */
+
 /**
  * Class AttachmentField
  * @package Creatissimo\MattermostBundle\Entity
@@ -30,11 +31,11 @@ class AttachmentField
     /**
      * AttachmentField constructor.
      *
-     * @param string $title
-     * @param string $value
+     * @param string  $title
+     * @param string  $value
      * @param boolean $short
      */
-    public function __construct($title, $value, $short=false)
+    public function __construct($title, $value, $short = false)
     {
         $this->setTitle($title);
         $this->setValue($value);
@@ -86,7 +87,7 @@ class AttachmentField
      */
     public function getShort()
     {
-        return (boolean) $this->short;
+        return (boolean)$this->short;
     }
 
 
@@ -97,7 +98,7 @@ class AttachmentField
      */
     public function setShort($short)
     {
-        $this->short = (boolean) $short;
+        $this->short = (boolean)$short;
 
         return $this;
     }

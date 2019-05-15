@@ -9,11 +9,11 @@
 
 namespace Creatissimo\MattermostBundle\EventListener;
 
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpFoundation\Request;
 use Creatissimo\MattermostBundle\Services\AttachmentHelper;
 use Creatissimo\MattermostBundle\Services\ExceptionHelper;
 use Creatissimo\MattermostBundle\Services\MattermostService;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 
 class KernelExceptionListener
@@ -34,23 +34,25 @@ class KernelExceptionListener
     private $request;
 
     /**
-     * @param MattermostService  $mmService
+     * @param MattermostService $mmService
+     * @param ExceptionHelper   $exceptionHelper
+     * @param AttachmentHelper  $attachmentHelper
      */
     public function __construct(MattermostService $mmService, ExceptionHelper $exceptionHelper, AttachmentHelper $attachmentHelper)
     {
-        $this->mmService = $mmService;
-        $this->exceptionHelper = $exceptionHelper;
+        $this->mmService        = $mmService;
+        $this->exceptionHelper  = $exceptionHelper;
         $this->attachmentHelper = $attachmentHelper;
     }
 
     /**
      * Handle the exception
      *
-     * @param GetResponseForExceptionEvent $event
+     * @param ExceptionEvent $event
      */
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
-        if($this->mmService->isEnabled('exception')) {
+        if ($this->mmService->isEnabled('exception')) {
             $this->exception = $event->getException();
             if ($this->exceptionHelper->shouldProcessException($this->exception)) {
                 $this->request = $event->getRequest();
