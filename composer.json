@@ -19,8 +19,8 @@
   "require": {
     "php": ">=5.4.0",
     "symfony/framework-bundle": "~2.7|~3.0|~4.0",
-    "ext-json": true,
-    "ext-curl": true
+    "ext-json": "*",
+    "ext-curl": "*"
   },
   "autoload": {
     "psr-4": {
