@@ -9,11 +9,11 @@
 
 namespace Creatissimo\MattermostBundle\Services;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Creatissimo\MattermostBundle\Entity\Attachment;
 use Creatissimo\MattermostBundle\Entity\AttachmentField;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AttachmentHelper
@@ -21,6 +21,9 @@ use Creatissimo\MattermostBundle\Entity\AttachmentField;
  */
 class AttachmentHelper
 {
+    /** @var ConsoleHelper */
+    private $consoleHelper;
+
     /**
      * AttachmentHelper constructor.
      *
@@ -39,22 +42,26 @@ class AttachmentHelper
     public function convertRequestToAttachment(Request $request)
     {
         $attachment = new Attachment('Request information');
-        $headers = $request->headers;
+        $headers    = $request->headers;
 
         $attachment->addField(new AttachmentField('Host', $headers->get('host'), true));
         $attachment->addField(new AttachmentField('URI', $request->getRequestUri(), true));
         $attachment->addField(new AttachmentField('Method', $request->getMethod(), true));
         $attachment->addField(new AttachmentField('IP', $request->getClientIp(), true));
-        if($user = $request->getUser()) {
+        if ($user = $request->getUser()) {
             $attachment->addField(new AttachmentField('User', $request->getUser(), true));
             $attachment->addField(new AttachmentField('User info', $request->getUserInfo(), true));
         }
         $referer = $headers->get('referer');
-        if(!empty($referer)) $attachment->addField(new AttachmentField('Referer', $referer));
+        if (!empty($referer)) {
+            $attachment->addField(new AttachmentField('Referer', $referer));
+        }
         $userAgent = $headers->get('user-agent');
-        if(!empty($userAgent)) $attachment->addField(new AttachmentField('User-Agent', $userAgent));
+        if (!empty($userAgent)) {
+            $attachment->addField(new AttachmentField('User-Agent', $userAgent));
+        }
         $data = $request->request->all();
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $attachment->addField(new AttachmentField($key, $value, true));
         }
         $attachment->addField(new AttachmentField('Request', $request->__toString()));
@@ -76,15 +83,15 @@ class AttachmentHelper
         $attachment->addField(new AttachmentField('Command', $command->getName()));
 
         $inputStr = $input->__toString();
-        if(!empty($inputStr)) {
+        if (!empty($inputStr)) {
             $attachment->addField(new AttachmentField('Input', $inputStr));
         }
 
-        if($argumentString = $this->consoleHelper->argumentsToString($input)) {
+        if ($argumentString = $this->consoleHelper->argumentsToString($input)) {
             $attachment->addField(new AttachmentField('Arguments', $argumentString));
         }
 
-        if($optionString = $this->consoleHelper->optionsToString($input)) {
+        if ($optionString = $this->consoleHelper->optionsToString($input)) {
             $attachment->addField(new AttachmentField('Options', $optionString));
         }
 

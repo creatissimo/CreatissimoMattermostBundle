@@ -43,7 +43,7 @@ class Message
     }
 
     /**
-     * @param string $name
+     * @param string $channel
      *
      * @return $this
      */
@@ -157,7 +157,7 @@ class Message
      */
     public function addAttachment(Attachment $attachment)
     {
-        if($attachment->hasTitle() || $attachment->hasPretext()  || $attachment->hasFields()) {
+        if ($attachment->hasTitle() || $attachment->hasPretext() || $attachment->hasFields()) {
             $this->attachments[] = $attachment;
         }
 
@@ -171,6 +171,6 @@ class Message
      */
     public function hasAttachments()
     {
-        return (count($this->attachments) > 0) ? true : false;
+        return count($this->attachments) > 0;
     }
 }
