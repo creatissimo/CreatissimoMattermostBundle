@@ -15,14 +15,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Creatissimo\MattermostBundle\Entity\Message;
-use Creatissimo\MattermostBundle\Services\MattermostHelper;
 
 class PostCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('mattermost:post')
@@ -40,7 +39,7 @@ class PostCommand extends ContainerAwareCommand
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $mmService = $this->getContainer()->get('mattermost.service');
 
@@ -48,13 +47,19 @@ class PostCommand extends ContainerAwareCommand
         $message = new Message($text);
 
         $channel = $input->getOption('channel');
-        if($channel) $message->setChannel($channel);
+        if($channel) {
+            $message->setChannel($channel);
+        }
 
         $username = $input->getOption('username');
-        if($username) $message->setUsername($username);
+        if($username) {
+            $message->setUsername($username);
+        }
 
         $icon = $input->getOption('icon');
-        if($icon) $message->setIconUrl($icon);
+        if($icon) {
+            $message->setIconUrl($icon);
+        }
 
         $mmService->setMessage($message, true)->sendMessage();
     }

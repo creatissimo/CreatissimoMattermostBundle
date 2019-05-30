@@ -53,7 +53,7 @@ class ConsoleExceptionListener
      *
      * @param ConsoleExceptionEvent $event
      */
-    public function onConsoleException(ConsoleExceptionEvent $event)
+    public function onConsoleException(ConsoleExceptionEvent $event): void
     {
         if ($this->mmService->isEnabled('exception')) {
             $this->exception = $event->getException();
@@ -70,7 +70,7 @@ class ConsoleExceptionListener
     /**
      * Post exception details to Mattermost
      */
-    protected function postToMattermost()
+    protected function postToMattermost(): void
     {
         $message = $this->exceptionHelper->convertExceptionToMessage($this->exception);
 

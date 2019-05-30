@@ -13,7 +13,7 @@ use Creatissimo\MattermostBundle\Services\AttachmentHelper;
 use Creatissimo\MattermostBundle\Services\ExceptionHelper;
 use Creatissimo\MattermostBundle\Services\MattermostService;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 
 class KernelExceptionListener
@@ -48,9 +48,9 @@ class KernelExceptionListener
     /**
      * Handle the exception
      *
-     * @param ExceptionEvent $event
+     * @param GetResponseForExceptionEvent $event
      */
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(GetResponseForExceptionEvent $event): void
     {
         if ($this->mmService->isEnabled('exception')) {
             $this->exception = $event->getException();
@@ -66,7 +66,7 @@ class KernelExceptionListener
     /**
      * Post exception details to Mattermost
      */
-    protected function postToMattermost()
+    protected function postToMattermost(): void
     {
         $message = $this->exceptionHelper->convertExceptionToMessage($this->exception);
         $message->addAttachment($this->attachmentHelper->convertRequestToAttachment($this->request));

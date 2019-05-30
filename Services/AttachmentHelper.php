@@ -39,7 +39,7 @@ class AttachmentHelper
      *
      * @return Attachment
      */
-    public function convertRequestToAttachment(Request $request)
+    public function convertRequestToAttachment(Request $request): Attachment
     {
         $attachment = new Attachment('Request information');
         $headers    = $request->headers;
@@ -76,7 +76,7 @@ class AttachmentHelper
      *
      * @return Attachment
      */
-    public function convertCommandToAttachment(Command $command, InputInterface $input)
+    public function convertCommandToAttachment(Command $command, InputInterface $input): Attachment
     {
         $attachment = new Attachment('Command information');
 

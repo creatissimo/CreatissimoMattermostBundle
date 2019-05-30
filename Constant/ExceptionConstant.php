@@ -5,5 +5,5 @@ namespace Creatissimo\MattermostBundle\Constant;
 
 class ExceptionConstant
 {
-    const EXCEPTION_COLOR = '#FF0B16';
+    public const EXCEPTION_COLOR = '#FF0B16';
 }

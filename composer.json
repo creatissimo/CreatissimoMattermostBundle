@@ -17,8 +17,9 @@
     "Apache-2.0"
   ],
   "require": {
-    "php": ">=5.4.0",
-    "symfony/framework-bundle": "~2.7|~3.0|~4.0",
+    "php": ">=7.1.0",
+    "symfony/framework-bundle": "~3.4",
+    "symfony/console": "3.4.*",
     "ext-json": "*",
     "ext-curl": "*"
   },

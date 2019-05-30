@@ -44,13 +44,13 @@ class MattermostService
     /** @var Message */
     private $message;
 
-    const MAX_MESSAGE_LENGTH = 7600;
+    private const MAX_MESSAGE_LENGTH = 7600;
 
     /**
      * @param string          $environment
      * @param LoggerInterface $logger
      */
-    public function __construct($environment, LoggerInterface $logger)
+    public function __construct(string $environment, LoggerInterface $logger)
     {
         $this->logger = $logger;
         $this->setEnvironment($environment);
@@ -62,7 +62,7 @@ class MattermostService
      *
      * @return $this
      */
-    public function setMessage(Message $message, $setEnvironmentToMessage = true)
+    public function setMessage(Message $message, bool $setEnvironmentToMessage = true): self
     {
         $this->message = $message;
         if ($setEnvironmentToMessage) {
@@ -75,7 +75,7 @@ class MattermostService
     /**
      * @return Message
      */
-    public function getMessage()
+    public function getMessage(): Message
     {
         return $this->message;
     }
@@ -85,7 +85,7 @@ class MattermostService
      *
      * @return $this
      */
-    public function setDefaultsToMessage($force = false)
+    public function setDefaultsToMessage(bool $force = false): self
     {
         if ($this->message) {
             $conf = $this->getConfiguration();
@@ -112,7 +112,7 @@ class MattermostService
      *
      * @return null|string
      */
-    protected function serializeMessage()
+    protected function serializeMessage(): ?string
     {
         if (!$this->message) {
             return false;
@@ -167,7 +167,7 @@ class MattermostService
      * @var string $text
      *
      */
-    public function sendMessage($text)
+    public function sendMessage(string $text): bool
     {
         if (!empty($text)) {
             return $this->setMessage(new Message($text))->send();
@@ -181,7 +181,7 @@ class MattermostService
      *
      * @return bool
      */
-    public function send()
+    public function send(): bool
     {
         if (!$this->getMessage()) {
             return false;
@@ -191,11 +191,11 @@ class MattermostService
         $url     = $this->getWebhook();
         $message = $this->serializeMessage();
 
-        list($httpStatusCode, $response) = $this->sendCurlRequest($url, $message);
+        [$httpStatusCode, $response] = $this->sendCurlRequest($url, $message);
 
         if (400 === $httpStatusCode) {
             $message = substr($message, 0, self::MAX_MESSAGE_LENGTH);
-            list($httpStatusCode, $response) = $this->sendCurlRequest($url, $message);
+            [$httpStatusCode, $response] = $this->sendCurlRequest($url, $message);
         }
 
         if ($httpStatusCode !== 200) {
@@ -215,7 +215,7 @@ class MattermostService
     /**
      * @param $message
      */
-    protected function log($message)
+    protected function log($message): void
     {
         if (!empty($this->logger)) {
             $this->logger->info($message);
@@ -225,7 +225,7 @@ class MattermostService
     /**
      * @return string
      */
-    public function getEnvironment()
+    public function getEnvironment(): string
     {
         return $this->environment;
     }
@@ -235,7 +235,7 @@ class MattermostService
      *
      * @return $this
      */
-    public function setEnvironment($environment)
+    public function setEnvironment($environment): self
     {
         $this->environment = $environment;
 
@@ -245,7 +245,7 @@ class MattermostService
     /**
      * @return string
      */
-    public function getWebhook()
+    public function getWebhook(): string
     {
         return $this->webhook;
     }
@@ -255,7 +255,7 @@ class MattermostService
      *
      * @return $this
      */
-    public function setWebhook($webhook)
+    public function setWebhook(string $webhook): self
     {
         $this->webhook = $webhook;
 
@@ -265,7 +265,7 @@ class MattermostService
     /**
      * @return string
      */
-    public function getAppname()
+    public function getAppname(): string
     {
         return $this->appname;
     }
@@ -275,7 +275,7 @@ class MattermostService
      *
      * @return $this
      */
-    public function setAppname($appname)
+    public function setAppname(string $appname): self
     {
         $this->appname = $appname;
 
@@ -285,7 +285,7 @@ class MattermostService
     /**
      * @return array
      */
-    public function getEnvironmentConfigurations()
+    public function getEnvironmentConfigurations(): array
     {
         return $this->environmentConfigurations;
     }
@@ -293,7 +293,7 @@ class MattermostService
     /**
      * @param array $environmentConfigurations
      */
-    public function setEnvironmentConfigurations($environmentConfigurations)
+    public function setEnvironmentConfigurations(array $environmentConfigurations): void
     {
         $this->environmentConfigurations = $environmentConfigurations;
     }
@@ -301,17 +301,15 @@ class MattermostService
     /**
      * @return array|null
      */
-    public function getEnvironmentConfiguration()
+    public function getEnvironmentConfiguration(): ?array
     {
-        return array_key_exists($this->getEnvironment(), $this->environmentConfigurations)
-            ? $this->environmentConfigurations[ $this->getEnvironment() ]
-            : null;
+        return $this->environmentConfigurations[ $this->getEnvironment() ] ?? null;
     }
 
     /**
      * @return array
      */
-    public function getConfiguration()
+    public function getConfiguration(): array
     {
         return $this->configuration;
     }
@@ -321,21 +319,21 @@ class MattermostService
      *
      * @return self
      */
-    public function setConfiguration($conf)
+    public function setConfiguration(array $conf): self
     {
         $this->configuration = $conf;
 
         return $this;
     }
 
-    private function processEnvironment()
+    private function processEnvironment(): void
     {
         $config = $this->getEnvironmentConfiguration();
         if (!empty($config)) {
             $names = ['webhook', 'appname'];
             foreach ($names as $name) {
                 if (array_key_exists($name, $config)) {
-                    $funcName = "set" . ucfirst($name);
+                    $funcName = 'set' . ucfirst($name);
                     $this->$funcName($config[ $name ]);
                 }
             }
@@ -355,7 +353,7 @@ class MattermostService
      *
      * @return bool
      */
-    public function isEnabled($function = null)
+    public function isEnabled(string $function = null): bool
     {
         $enabled = false;
         $config  = $this->getEnvironmentConfiguration();
@@ -383,7 +381,7 @@ class MattermostService
      *
      * @return array|null
      */
-    private function sendCurlRequest($url, $message)
+    private function sendCurlRequest(string $url, string $message): ?array
     {
         $ch = curl_init();
         if (!$ch) {

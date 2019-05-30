@@ -22,7 +22,7 @@ class ConsoleHelper
      *
      * @return null|string
      */
-    public function argumentsToString(InputInterface $input)
+    public function argumentsToString(InputInterface $input): ?string
     {
         $argumentString = null;
         $argumentArray  = [];
@@ -47,7 +47,7 @@ class ConsoleHelper
      *
      * @return null|string
      */
-    public function optionsToString(InputInterface $input)
+    public function optionsToString(InputInterface $input): ?string
     {
         $optionString = null;
         $optionArray  = [];
@@ -67,7 +67,7 @@ class ConsoleHelper
         return $optionString;
     }
 
-    private function convertBoolToSting($value)
+    private function convertBoolToSting(bool $value): string
     {
         return $value ? 'true' : 'false';
     }

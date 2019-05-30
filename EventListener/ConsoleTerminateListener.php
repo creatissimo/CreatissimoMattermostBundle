@@ -50,7 +50,7 @@ class ConsoleTerminateListener
      *
      * @param ConsoleTerminateEvent $event
      */
-    public function onConsoleTerminate(ConsoleTerminateEvent $event)
+    public function onConsoleTerminate(ConsoleTerminateEvent $event): void
     {
         if ($this->mmService->isEnabled('terminate')) {
             $config = $this->mmService->getEnvironmentConfiguration();
@@ -69,7 +69,7 @@ class ConsoleTerminateListener
     /**
      * Post exception details to Mattermost
      */
-    protected function postToMattermost()
+    protected function postToMattermost(): void
     {
         $message = new Message('Command has been terminated; ExitCode: ' . $this->exitCode);
 
@@ -87,7 +87,7 @@ class ConsoleTerminateListener
      *
      * @return bool
      */
-    public function shouldProcessExitCode($exitCode)
+    public function shouldProcessExitCode(int $exitCode): bool
     {
         $shouldProcess = true;
         $config        = $this->mmService->getEnvironmentConfiguration();

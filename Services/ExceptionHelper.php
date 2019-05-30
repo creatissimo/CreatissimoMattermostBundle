@@ -37,7 +37,7 @@ class ExceptionHelper
      * @return Message
      * @throws \Exception
      */
-    public function convertExceptionToMessage(\Exception $exception, $source = null, $trace = false)
+    public function convertExceptionToMessage(\Exception $exception, $source = null, bool $trace = false): Message
     {
         $code          = $exception->getCode();
         $message       = $exception->getMessage();
@@ -84,7 +84,7 @@ class ExceptionHelper
      * @return bool
      * @throws \Exception
      */
-    public function sendException(\Exception $exception, $source = null, $trace = false)
+    public function sendException(\Exception $exception, $source = null, bool $trace = false): bool
     {
         $message = $this->convertExceptionToMessage($exception, $source, $trace);
 
@@ -96,7 +96,7 @@ class ExceptionHelper
      *
      * @return bool
      */
-    public function shouldAddTrace()
+    public function shouldAddTrace(): bool
     {
         $config = $this->mmService->getEnvironmentConfiguration();
         if (!empty($config) && array_key_exists('exception', $config)) {
@@ -116,7 +116,7 @@ class ExceptionHelper
      *
      * @return bool
      */
-    public function shouldProcessException(\Exception $exception)
+    public function shouldProcessException(\Exception $exception): bool
     {
         $shouldProcess = true;
         $config        = $this->mmService->getEnvironmentConfiguration();
@@ -142,37 +142,37 @@ class ExceptionHelper
      *
      * @return string
      */
-    private function getExceptionTraceAsString(\Exception $exception)
+    private function getExceptionTraceAsString(\Exception $exception): string
     {
         $rtn   = '';
         $count = 0;
         foreach ($exception->getTrace() as $frame) {
             $args = '';
             if (isset($frame['args'])) {
-                $args = [];
+                $argList = [];
                 foreach ($frame['args'] as $arg) {
                     if (is_string($arg)) {
-                        $args[] = "'" . $arg . "'";
+                        $argList[] = "'" . $arg . "'";
                     } elseif (is_array($arg)) {
-                        $args[] = 'Array';
+                        $argList[] = 'Array';
                     } elseif (null === $arg) {
-                        $args[] = 'NULL';
+                        $argList[] = 'NULL';
                     } elseif (is_bool($arg)) {
-                        $args[] = $arg ? 'true' : 'false';
+                        $argList[] = $arg ? 'true' : 'false';
                     } elseif (is_object($arg)) {
-                        $args[] = get_class($arg);
+                        $argList[] = get_class($arg);
                     } elseif (is_resource($arg)) {
-                        $args[] = get_resource_type($arg);
+                        $argList[] = get_resource_type($arg);
                     } else {
-                        $args[] = $arg;
+                        $argList[] = $arg;
                     }
                 }
-                $args = implode(', ', $args);
+                $args = implode(', ', $argList);
             }
             $rtn .= sprintf("#%s %s(%s): %s(%s)\n",
                 $count,
-                isset($frame['file']) ? $frame['file'] : 'unknown file',
-                isset($frame['line']) ? $frame['line'] : 'unknown line',
+                $frame['file'] ?? 'unknown file',
+                $frame['line'] ?? 'unknown line',
                 isset($frame['class']) ? $frame['class'] . $frame['type'] . $frame['function'] : $frame['function'],
                 $args);
             $count++;

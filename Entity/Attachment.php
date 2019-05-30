@@ -47,7 +47,7 @@ class Attachment
     /**
      * @return string
      */
-    public function getFallback()
+    public function getFallback(): string
     {
         return $this->fallback;
     }
@@ -58,7 +58,7 @@ class Attachment
      *
      * @return $this
      */
-    public function setFallback($fallback)
+    public function setFallback(string $fallback): self
     {
         $this->fallback = $fallback;
 
@@ -68,7 +68,7 @@ class Attachment
     /**
      * @return string
      */
-    public function getColor()
+    public function getColor(): string
     {
         return $this->color;
     }
@@ -79,7 +79,7 @@ class Attachment
      *
      * @return $this
      */
-    public function setColor($color)
+    public function setColor(string $color): self
     {
         $this->color = $color;
 
@@ -89,7 +89,7 @@ class Attachment
     /**
      * @return string
      */
-    public function getPretext()
+    public function getPretext(): string
     {
         return $this->pretext;
     }
@@ -100,7 +100,7 @@ class Attachment
      *
      * @return $this
      */
-    public function setPretext($pretext)
+    public function setPretext(string $pretext): self
     {
         $this->pretext = $pretext;
 
@@ -112,7 +112,7 @@ class Attachment
      *
      * @return bool
      */
-    public function hasPretext()
+    public function hasPretext(): bool
     {
         return $this->pretext ? true : false;
     }
@@ -120,7 +120,7 @@ class Attachment
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -130,7 +130,7 @@ class Attachment
      *
      * @return $this
      */
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -142,7 +142,7 @@ class Attachment
      *
      * @return bool
      */
-    public function hasTitle()
+    public function hasTitle(): bool
     {
         return $this->title ? true : false;
     }
@@ -150,7 +150,7 @@ class Attachment
     /**
      * @return array
      */
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
@@ -162,7 +162,7 @@ class Attachment
      *
      * @return self
      */
-    public function addField(AttachmentField $field)
+    public function addField(AttachmentField $field): self
     {
         $this->fields[] = $field;
 
@@ -174,7 +174,7 @@ class Attachment
      *
      * @return bool
      */
-    public function hasFields()
+    public function hasFields(): bool
     {
         return count($this->fields) > 0;
     }

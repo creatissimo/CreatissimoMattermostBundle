@@ -37,7 +37,7 @@ class Message
     /**
      * @return string
      */
-    public function getChannel()
+    public function getChannel(): string
     {
         return $this->channel;
     }
@@ -47,7 +47,7 @@ class Message
      *
      * @return $this
      */
-    public function setChannel($channel)
+    public function setChannel(string $channel): self
     {
         $this->channel = $channel;
 
@@ -57,7 +57,7 @@ class Message
     /**
      * @return string
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -67,7 +67,7 @@ class Message
      *
      * @return $this
      */
-    public function setUsername($username)
+    public function setUsername(string $username): self
     {
         $this->username = $username;
 
@@ -77,7 +77,7 @@ class Message
     /**
      * @return string
      */
-    public function getIconUrl()
+    public function getIconUrl(): string
     {
         return $this->iconUrl;
     }
@@ -87,7 +87,7 @@ class Message
      *
      * @return $this
      */
-    public function setIconUrl($iconUrl)
+    public function setIconUrl(string $iconUrl): self
     {
         $this->iconUrl = $iconUrl;
 
@@ -97,7 +97,7 @@ class Message
     /**
      * @return string
      */
-    public function getText()
+    public function getText(): string
     {
         return $this->text;
     }
@@ -107,7 +107,7 @@ class Message
      *
      * @return $this
      */
-    public function setText($text)
+    public function setText(string $text): self
     {
         $this->text = $text;
 
@@ -117,7 +117,7 @@ class Message
     /**
      * @return array
      */
-    public function getAttachments()
+    public function getAttachments(): array
     {
         return $this->attachments;
     }
@@ -125,7 +125,7 @@ class Message
     /**
      * @return array
      */
-    public function getFirstAttachment()
+    public function getFirstAttachment(): array
     {
         return array_values($this->attachments)[0];
     }
@@ -133,7 +133,7 @@ class Message
     /**
      * @return array
      */
-    public function getLastAttachment()
+    public function getLastAttachment(): array
     {
         return end($this->attachments);
     }
@@ -143,7 +143,7 @@ class Message
      *
      * @return $this
      */
-    public function setAttachments($attachments)
+    public function setAttachments(array $attachments): self
     {
         $this->attachments = $attachments;
 
@@ -155,7 +155,7 @@ class Message
      *
      * @return $this
      */
-    public function addAttachment(Attachment $attachment)
+    public function addAttachment(Attachment $attachment): self
     {
         if ($attachment->hasTitle() || $attachment->hasPretext() || $attachment->hasFields()) {
             $this->attachments[] = $attachment;
@@ -169,7 +169,7 @@ class Message
      *
      * @return bool
      */
-    public function hasAttachments()
+    public function hasAttachments(): bool
     {
         return count($this->attachments) > 0;
     }

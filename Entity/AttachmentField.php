@@ -45,7 +45,7 @@ class AttachmentField
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -55,7 +55,7 @@ class AttachmentField
      *
      * @return $this
      */
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -65,7 +65,7 @@ class AttachmentField
     /**
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
@@ -75,7 +75,7 @@ class AttachmentField
      *
      * @return $this
      */
-    public function setValue($value)
+    public function setValue(string $value): self
     {
         $this->value = $value;
 
@@ -85,7 +85,7 @@ class AttachmentField
     /**
      * @return boolean
      */
-    public function getShort()
+    public function getShort(): bool
     {
         return (boolean)$this->short;
     }
@@ -96,7 +96,7 @@ class AttachmentField
      *
      * @return $this
      */
-    public function setShort($short)
+    public function setShort($short): self
     {
         $this->short = (boolean)$short;
 

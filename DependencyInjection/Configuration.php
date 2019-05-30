@@ -21,10 +21,10 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('creatissimo_mattermost');
+        $treeBuilder = new TreeBuilder('creatissimo_mattermost');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
@@ -33,21 +33,16 @@ class Configuration implements ConfigurationInterface
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->end()
-
                 ->scalarNode('appname')
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->end()
-
                 ->scalarNode('username')
                 ->end()
-
                 ->scalarNode('iconUrl')
                 ->end()
-
                 ->scalarNode('channel')
                 ->end()
-
                 ->arrayNode('environments')
                     ->isRequired()
                     ->prototype('array')
@@ -78,7 +73,6 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end();
-
 
         return $treeBuilder;
     }
