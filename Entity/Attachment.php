@@ -45,9 +45,9 @@ class Attachment
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getFallback(): string
+    public function getFallback(): ?string
     {
         return $this->fallback;
     }
@@ -66,9 +66,9 @@ class Attachment
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getColor(): string
+    public function getColor(): ?string
     {
         return $this->color;
     }
@@ -87,9 +87,9 @@ class Attachment
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getPretext(): string
+    public function getPretext(): ?string
     {
         return $this->pretext;
     }

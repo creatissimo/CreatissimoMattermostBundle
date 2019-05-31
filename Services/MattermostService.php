@@ -75,7 +75,7 @@ class MattermostService
     /**
      * @return Message
      */
-    public function getMessage(): Message
+    public function getMessage(): ?Message
     {
         return $this->message;
     }
@@ -110,9 +110,9 @@ class MattermostService
     /**
      * Format the JSON message to post to Mattermost
      *
-     * @return null|string
+     * @return bool|string
      */
-    protected function serializeMessage(): ?string
+    protected function serializeMessage()
     {
         if (!$this->message) {
             return false;
@@ -162,10 +162,11 @@ class MattermostService
         return json_encode($messageArray);
     }
 
+
     /**
-     * @return bool
-     * @var string $text
+     * @param string $text
      *
+     * @return bool
      */
     public function sendMessage(string $text): bool
     {
@@ -245,7 +246,7 @@ class MattermostService
     /**
      * @return string
      */
-    public function getWebhook(): string
+    public function getWebhook(): ?string
     {
         return $this->webhook;
     }
@@ -265,7 +266,7 @@ class MattermostService
     /**
      * @return string
      */
-    public function getAppname(): string
+    public function getAppname(): ?string
     {
         return $this->appname;
     }
@@ -285,7 +286,7 @@ class MattermostService
     /**
      * @return array
      */
-    public function getEnvironmentConfigurations(): array
+    public function getEnvironmentConfigurations(): ?array
     {
         return $this->environmentConfigurations;
     }
@@ -309,7 +310,7 @@ class MattermostService
     /**
      * @return array
      */
-    public function getConfiguration(): array
+    public function getConfiguration(): ?array
     {
         return $this->configuration;
     }

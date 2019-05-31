@@ -33,11 +33,10 @@ class Message
         $this->setText($text);
     }
 
-
     /**
-     * @return string
+     * @return null|string
      */
-    public function getChannel(): string
+    public function getChannel(): ?string
     {
         return $this->channel;
     }
@@ -55,9 +54,9 @@ class Message
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -75,9 +74,9 @@ class Message
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getIconUrl(): string
+    public function getIconUrl(): ?string
     {
         return $this->iconUrl;
     }
