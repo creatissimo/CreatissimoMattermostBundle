@@ -62,6 +62,7 @@ class AttachmentHelper
         }
         $data = $request->request->all();
         foreach ($data as $key => $value) {
+            $value = is_array($value) ? \json_encode($value) : $value;
             $attachment->addField(new AttachmentField($key, $value, true));
         }
         $attachment->addField(new AttachmentField('Request', $request->__toString()));
