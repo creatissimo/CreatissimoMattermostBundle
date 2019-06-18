@@ -44,7 +44,7 @@ class MattermostService
     /** @var Message */
     private $message;
 
-    private const MAX_MESSAGE_LENGTH = 7600;
+    private const MAX_MESSAGE_LENGTH = 7400;
 
     /**
      * @param string          $environment
@@ -195,7 +195,9 @@ class MattermostService
         [$httpStatusCode, $response] = $this->sendCurlRequest($url, $message);
 
         if (400 === $httpStatusCode) {
-            $message = substr($message, 0, self::MAX_MESSAGE_LENGTH);
+            $text = substr($this->message->getText(), 0, self::MAX_MESSAGE_LENGTH);
+            $this->message->setText($text);
+            $message = $this->serializeMessage();
             [$httpStatusCode, $response] = $this->sendCurlRequest($url, $message);
         }
 
