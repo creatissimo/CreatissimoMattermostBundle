@@ -1,11 +1,4 @@
 <?php
-/**
- * Mattermost service
- *
- * User: pascal
- * Date: 16.10.16
- * Time: 21:33
- */
 
 namespace Creatissimo\MattermostBundle\Services;
 
@@ -395,7 +388,10 @@ class MattermostService
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            [
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($message)]
         );

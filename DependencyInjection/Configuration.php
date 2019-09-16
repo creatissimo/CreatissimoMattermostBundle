@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: pascal
- * Date: 16.10.16
- * Time: 21:39
- */
 
 namespace Creatissimo\MattermostBundle\DependencyInjection;
 

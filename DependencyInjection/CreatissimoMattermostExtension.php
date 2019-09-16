@@ -1,4 +1,5 @@
 <?php
+
 namespace Creatissimo\MattermostBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;

@@ -1,5 +1,5 @@
 # CreatissimoMattermostBundle
- Symfony3.4 Bundle for communicating with the Mattermost Chat
+ Symfony4 Bundle for communicating with the Mattermost Chat
  
  Example configuration:
  

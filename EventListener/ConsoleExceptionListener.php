@@ -1,11 +1,4 @@
 <?php
-/**
- * Log symfony exceptionst to Mattermost
- *
- * User: pascal
- * Date: 16.10.16
- * Time: 21:33
- */
 
 namespace Creatissimo\MattermostBundle\EventListener;
 

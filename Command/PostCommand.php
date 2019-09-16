@@ -1,12 +1,6 @@
 <?php
-/**
- * User: prossa
- * Date: 16/10/16
- * Time: 22:12
- */
 
 namespace Creatissimo\MattermostBundle\Command;
-
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -47,17 +41,17 @@ class PostCommand extends ContainerAwareCommand
         $message = new Message($text);
 
         $channel = $input->getOption('channel');
-        if($channel) {
+        if ($channel) {
             $message->setChannel($channel);
         }
 
         $username = $input->getOption('username');
-        if($username) {
+        if ($username) {
             $message->setUsername($username);
         }
 
         $icon = $input->getOption('icon');
-        if($icon) {
+        if ($icon) {
             $message->setIconUrl($icon);
         }
 

@@ -1,11 +1,4 @@
 <?php
-/**
- * Log symfony exceptionst to Mattermost
- *
- * User: pascal
- * Date: 16.10.16
- * Time: 21:33
- */
 
 namespace Creatissimo\MattermostBundle\EventListener;
 
@@ -14,7 +7,6 @@ use Creatissimo\MattermostBundle\Services\ExceptionHelper;
 use Creatissimo\MattermostBundle\Services\MattermostService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-
 
 class KernelExceptionListener
 {

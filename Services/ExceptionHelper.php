@@ -1,11 +1,4 @@
 <?php
-/**
- * Log symfony exceptionst to Mattermost
- *
- * User: pascal
- * Date: 16.10.16
- * Time: 21:33
- */
 
 namespace Creatissimo\MattermostBundle\Services;
 
@@ -169,12 +162,14 @@ class ExceptionHelper
                 }
                 $args = implode(', ', $argList);
             }
-            $rtn .= sprintf("#%s %s(%s): %s(%s)\n",
+            $rtn .= sprintf(
+                "#%s %s(%s): %s(%s)\n",
                 $count,
                 $frame['file'] ?? 'unknown file',
                 $frame['line'] ?? 'unknown line',
                 isset($frame['class']) ? $frame['class'] . $frame['type'] . $frame['function'] : $frame['function'],
-                $args);
+                $args
+            );
             $count++;
         }
 

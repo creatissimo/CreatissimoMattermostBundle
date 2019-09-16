@@ -1,11 +1,4 @@
 <?php
-/**
- * Helper to create attachments for Mattermost messages
- *
- * User: pascal
- * Date: 04.11.16
- * Time: 16:05
- */
 
 namespace Creatissimo\MattermostBundle\Services;
 
