@@ -18,8 +18,8 @@
   ],
   "require": {
     "php": ">=7.1.0",
-    "symfony/framework-bundle": "~3.4",
-    "symfony/console": "3.4.*",
+    "symfony/framework-bundle": "^4.0",
+    "symfony/console": "^4.0",
     "ext-json": "*",
     "ext-curl": "*"
   },
