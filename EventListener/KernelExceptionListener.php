@@ -61,7 +61,11 @@ class KernelExceptionListener
     protected function postToMattermost(): void
     {
         $message = $this->exceptionHelper->convertExceptionToMessage($this->exception);
-        $message->addAttachment($this->attachmentHelper->convertRequestToAttachment($this->request));
+
+        if ($this->exceptionHelper->shouldAddRequestInformation()) {
+            $message->addAttachment($this->attachmentHelper->convertRequestToAttachment($this->request));
+        }
+
         $this->mmService->setMessage($message)->send();
     }
 }

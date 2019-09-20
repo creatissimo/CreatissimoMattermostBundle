@@ -103,6 +103,24 @@ class ExceptionHelper
     }
 
     /**
+     * Check if request information should be added
+     *
+     * @return bool
+     */
+    public function shouldAddRequestInformation(): bool
+    {
+        $config = $this->mmService->getEnvironmentConfiguration();
+        if (!empty($config) && array_key_exists('exception', $config)) {
+            $exceptionConf = $config['exception'];
+            if (array_key_exists('request_information', $exceptionConf) && $exceptionConf['request_information']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check to see if this exception is in an exclude list
      *
      * @param \Exception $exception

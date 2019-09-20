@@ -40,7 +40,7 @@ class MattermostService
     private const MAX_MESSAGE_LENGTH = 7400;
 
     /**
-     * @param string          $environment
+     * @param string $environment
      * @param LoggerInterface $logger
      */
     public function __construct(string $environment, LoggerInterface $logger)

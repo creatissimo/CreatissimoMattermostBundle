@@ -20,7 +20,7 @@
                 exception:
                     enable: true
                     trace: true
-    
+                    request_information: true
             prod:
                 enable: true
                 terminate:
@@ -29,5 +29,6 @@
                 exception:
                     enable: true
                     trace: true
+                    request_information: true
                     exclude_class:
                         - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
