@@ -59,6 +59,7 @@ class Configuration implements ConfigurationInterface
                                 ->children()
                                     ->booleanNode('enable')->defaultTrue()->end()
                                     ->booleanNode('trace')->defaultTrue()->end()
+                                    ->scalarNode('trace_level')->end()
                                     ->booleanNode('request_information')->defaultTrue()->end()
                                     ->arrayNode('exclude_class')
                                         ->prototype('scalar')->end()

@@ -63,7 +63,7 @@ class KernelExceptionListener
         $message = $this->exceptionHelper->convertExceptionToMessage($this->exception);
 
         if ($this->exceptionHelper->shouldAddRequestInformation()) {
-            $message->addAttachment($this->attachmentHelper->convertRequestToAttachment($this->request));
+            $message->addAttachment($this->attachmentHelper->convertRequestToAttachment($this->request, $this->exceptionHelper->getTraceLevel()));
         }
 
         $this->mmService->setMessage($message)->send();

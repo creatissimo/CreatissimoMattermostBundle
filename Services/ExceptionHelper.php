@@ -85,6 +85,24 @@ class ExceptionHelper
     }
 
     /**
+     * Get trace level
+     *
+     * @return string
+     */
+    public function getTraceLevel(): string
+    {
+        $config = $this->mmService->getEnvironmentConfiguration();
+        if (!empty($config) && array_key_exists('exception', $config)) {
+            $exceptionConf = $config['exception'];
+            if (array_key_exists('trace_level', $exceptionConf) && $exceptionConf['trace_level']) {
+                return $exceptionConf['trace_level'];
+            }
+        }
+
+        return 'full';
+    }
+
+    /**
      * Check if trace should be added
      *
      * @return bool

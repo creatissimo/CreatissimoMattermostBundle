@@ -32,33 +32,42 @@ class AttachmentHelper
      *
      * @return Attachment
      */
-    public function convertRequestToAttachment(Request $request): Attachment
+    public function convertRequestToAttachment(Request $request, $level = 'full'): Attachment
     {
         $attachment = new Attachment('Request information');
         $headers    = $request->headers;
 
-        $attachment->addField(new AttachmentField('Host', $headers->get('host'), true));
-        $attachment->addField(new AttachmentField('URI', $request->getRequestUri(), true));
-        $attachment->addField(new AttachmentField('Method', $request->getMethod(), true));
-        $attachment->addField(new AttachmentField('IP', $request->getClientIp(), true));
-        if ($user = $request->getUser()) {
-            $attachment->addField(new AttachmentField('User', $request->getUser(), true));
-            $attachment->addField(new AttachmentField('User info', $request->getUserInfo(), true));
+        if ($level == 'full'){
+            $attachment->addField(new AttachmentField('Host', $headers->get('host'), true));
         }
+        
+        $attachment->addField(new AttachmentField('URI', $headers->get('protocol').$headers->get('host').$request->getRequestUri(), true));
+        $attachment->addField(new AttachmentField('Method', $request->getMethod(), true));
+        
         $referer = $headers->get('referer');
         if (!empty($referer)) {
             $attachment->addField(new AttachmentField('Referer', $referer));
         }
-        $userAgent = $headers->get('user-agent');
-        if (!empty($userAgent)) {
-            $attachment->addField(new AttachmentField('User-Agent', $userAgent));
+
+        if ($level == 'full'){
+            $attachment->addField(new AttachmentField('IP', $request->getClientIp(), true));
+
+            if ($user = $request->getUser()) {
+                $attachment->addField(new AttachmentField('User', $request->getUser(), true));
+                $attachment->addField(new AttachmentField('User info', $request->getUserInfo(), true));
+            }
+
+            $userAgent = $headers->get('user-agent');
+            if (!empty($userAgent)) {
+                $attachment->addField(new AttachmentField('User-Agent', $userAgent));
+            }
+            $data = $request->request->all();
+            foreach ($data as $key => $value) {
+                $value = is_array($value) ? \json_encode($value) : $value;
+                $attachment->addField(new AttachmentField($key, $value, true));
+            }
+            $attachment->addField(new AttachmentField('Request', $request->__toString()));
         }
-        $data = $request->request->all();
-        foreach ($data as $key => $value) {
-            $value = is_array($value) ? \json_encode($value) : $value;
-            $attachment->addField(new AttachmentField($key, $value, true));
-        }
-        $attachment->addField(new AttachmentField('Request', $request->__toString()));
 
         return $attachment;
     }
