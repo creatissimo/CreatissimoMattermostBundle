@@ -155,6 +155,11 @@ class Attachment
         return $this->fields;
     }
 
+    public function setFields($fields)
+    {
+        return $this->fields = $fields;
+    }
+
     /**
      * Add field
      *
