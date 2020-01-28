@@ -410,7 +410,7 @@ class MattermostService
     {
         $text = $this->message->getText();
         if (strlen($text) > self::MAX_TEXT_LENGTH) {
-            $text = substr($text, 0, self::MAX_TEXT_LENGTH);
+            $text = substr($text, 0, self::MAX_TEXT_LENGTH) . '...';
             $this->message->setText($text);
         }
         if (strlen($this->serializeMessage()) > self::MAX_MESSAGE_LENGTH) {
@@ -427,10 +427,18 @@ class MattermostService
                 $this->message->setAttachments([$firstAttachment]);
             }
             if (strlen($this->serializeMessage()) > self::MAX_MESSAGE_LENGTH) {
-                /** @var Attachment $firstAttachment */
                 $firstAttachment = current($this->message->getAttachments());
-                $firstAttachment->setFields([]);
-                $this->message->setAttachments([$firstAttachment]);
+                $fields          = $firstAttachment->getFields();
+                /**
+                 * @var int             $key
+                 * @var AttachmentField $field
+                 */
+                foreach ($fields as $key => $field) {
+                    if (strlen($field->getValue()) > self::CUT_LENGTH) {
+                        $fields[ $key ]->setValue(substr($field->getValue(), 0, self::CUT_LENGTH) . '...');
+                    }
+                }
+                $firstAttachment->setFields($fields);
             }
         }
     }
