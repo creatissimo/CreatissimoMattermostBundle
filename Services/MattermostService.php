@@ -417,7 +417,7 @@ class MattermostService
             $attachments = $this->message->getAttachments();
             if (count($attachments) > 1) {
                 rewind($attachments);
-                $this->message->setAttachments(current($attachments));
+                $this->message->setAttachments([current($attachments)]);
             }
             if (strlen($this->serializeMessage()) > self::MAX_MESSAGE_LENGTH) {
                 /** @var Attachment $firstAttachment */
