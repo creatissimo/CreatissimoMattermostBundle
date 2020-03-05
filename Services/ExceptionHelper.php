@@ -30,14 +30,15 @@ class ExceptionHelper
     /**
      * Format the JSON message to post to Mattermost
      *
-     * @param \Exception $exception
-     * @param null       $source
-     * @param bool       $trace
+     * @param \Exception  $exception
+     * @param null        $source
+     * @param null|string $exceptionChannel
+     * @param bool        $trace
      *
      * @return Message
      * @throws \Exception
      */
-    public function convertExceptionToMessage(\Exception $exception, $source = null, bool $trace = false): Message
+    public function convertExceptionToMessage(\Exception $exception, $exceptionChannel = null, $source = null, bool $trace = false): Message
     {
         $code          = $exception->getCode();
         $message       = $exception->getMessage();
@@ -54,6 +55,9 @@ class ExceptionHelper
         }
 
         $mmMessage = new Message($text);
+        if ($exceptionChannel !== null) {
+            $mmMessage->setChannel($exceptionChannel);
+        }
 
         $attachment = new Attachment($fullClassName);
         $attachment->setColor(ExceptionConstant::EXCEPTION_COLOR)
@@ -77,16 +81,17 @@ class ExceptionHelper
     }
 
     /**
-     * @param \Exception $exception
-     * @param null       $source
-     * @param bool       $trace
+     * @param \Exception  $exception
+     * @param null        $source
+     * @param null|string $exceptionChannel
+     * @param bool        $trace
      *
      * @return bool
      * @throws \Exception
      */
-    public function sendException(\Exception $exception, $source = null, bool $trace = false): bool
+    public function sendException(\Exception $exception, $exceptionChannel = null, $source = null, bool $trace = false): bool
     {
-        $message = $this->convertExceptionToMessage($exception, $source, $trace);
+        $message = $this->convertExceptionToMessage($exception, $exceptionChannel, $source, $trace);
 
         return $this->mmService->setMessage($message)->send();
     }
