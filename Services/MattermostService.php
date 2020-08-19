@@ -33,10 +33,10 @@ class MattermostService
     private $appname;
 
     /** @var array */
-    private $configuration;
+    private $configuration = [];
 
     /** @var array */
-    private $environmentConfigurations;
+    private $environmentConfigurations = [];
 
     /** @var Message */
     private $message;
