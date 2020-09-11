@@ -26,8 +26,8 @@ class CreatissimoMattermostExtension extends Extension
 
         $definition = $container->getDefinition('mattermost.service');
         $definition->addMethodCall('setConfiguration', array($config));
-        $definition->addMethodCall('setWebhook', array($config['webhook']));
-        $definition->addMethodCall('setAppname', array($config['appname']));
+        $definition->addMethodCall('setUrl', array($config['url']));
+        $definition->addMethodCall('setBotAccessToken', array($config['botAccessToken']));
         $definition->addMethodCall('setEnvironmentConfigurations', array($config['environments']));
     }
 }
