@@ -128,6 +128,15 @@ class MattermostService
         return false;
     }
 
+    public function sendMessageToChannel(string $text, string $channel): bool
+    {
+        if (!empty($text)) {
+            return $this->setMessage((new Message($text))->setChannel($channel))->send();
+        }
+
+        return false;
+    }
+
     /**
      * Do an HTTP post to Mattermost
      */
