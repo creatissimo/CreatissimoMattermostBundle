@@ -53,7 +53,7 @@ class KernelExceptionListener
     public function onKernelException(ExceptionEvent $event): void
     {
         if ($this->mmService->isEnabled('exception')) {
-            $this->exception = $event->getException();
+            $this->exception = $event->getThrowable();
             if ($this->exceptionHelper->shouldProcessException($this->exception)) {
                 $this->request = $event->getRequest();
                 $this->postToMattermost();
