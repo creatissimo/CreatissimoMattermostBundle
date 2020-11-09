@@ -28,6 +28,7 @@ class CreatissimoMattermostExtension extends Extension
         $definition->addMethodCall('setConfiguration', array($config));
         $definition->addMethodCall('setUrl', array($config['url']));
         $definition->addMethodCall('setBotAccessToken', array($config['botAccessToken']));
+        $definition->addMethodCall('setAppName', array($config['appName']));
         $definition->addMethodCall('setEnvironmentConfigurations', array($config['environments']));
     }
 }

@@ -16,12 +16,8 @@ use Creatissimo\MattermostBundle\Entity\Message;
 
 class ExceptionHelper
 {
-    /** @var MattermostService */
-    private $mmService;
+    private MattermostService $mmService;
 
-    /**
-     * @param MattermostService $mmService
-     */
     public function __construct(MattermostService $mmService)
     {
         $this->mmService = $mmService;

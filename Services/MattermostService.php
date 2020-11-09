@@ -29,6 +29,7 @@ class MattermostService
     private LoggerInterface $logger;
     private string          $url;
     private string          $botAccessToken;
+    private string          $appname;
     private array           $configuration             = [];
     private array           $environmentConfigurations = [];
     private Message         $message;
@@ -210,6 +211,18 @@ class MattermostService
     public function setBotAccessToken(string $botAccessToken): self
     {
         $this->accessToken = $botAccessToken;
+
+        return $this;
+    }
+
+    public function getAppname()
+    {
+        return $this->appname;
+    }
+
+    public function setAppname($appname)
+    {
+        $this->appname = $appname;
 
         return $this;
     }
