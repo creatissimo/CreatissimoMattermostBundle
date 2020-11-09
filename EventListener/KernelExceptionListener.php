@@ -27,8 +27,8 @@ class KernelExceptionListener
     /** @var AttachmentHelper */
     private $attachmentHelper;
 
-    /** @var \Exception */
-    private $exception;
+    /** @var \Throwable */
+    private $throwable;
 
     /** @var  Request */
     private $request;
@@ -53,8 +53,8 @@ class KernelExceptionListener
     public function onKernelException(ExceptionEvent $event): void
     {
         if ($this->mmService->isEnabled('exception')) {
-            $this->exception = $event->getThrowable();
-            if ($this->exceptionHelper->shouldProcessException($this->exception)) {
+            $this->throwable = $event->getThrowable();
+            if ($this->exceptionHelper->shouldProcessException($this->throwable)) {
                 $this->request = $event->getRequest();
                 $this->postToMattermost();
             }
@@ -68,7 +68,7 @@ class KernelExceptionListener
      */
     protected function postToMattermost(): void
     {
-        $message = $this->exceptionHelper->convertExceptionToMessage($this->exception);
+        $message = $this->exceptionHelper->convertExceptionToMessage($this->throwable);
         $message->addAttachment($this->attachmentHelper->convertRequestToAttachment($this->request));
         $this->mmService->setMessage($message)->send();
     }

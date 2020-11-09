@@ -30,20 +30,14 @@ class ExceptionHelper
     /**
      * Format the JSON message to post to Mattermost
      *
-     * @param \Exception  $exception
-     * @param null        $source
-     * @param null|string $exceptionChannel
-     * @param bool        $trace
-     *
-     * @return Message
      * @throws \Exception
      */
-    public function convertExceptionToMessage(\Exception $exception, $exceptionChannel = null, $source = null, bool $trace = false): Message
+    public function convertExceptionToMessage(\Throwable $throwable, $exceptionChannel = null, $source = null, bool $trace = false): Message
     {
-        $code          = $exception->getCode();
-        $message       = $exception->getMessage();
-        $file          = $exception->getFile();
-        $line          = $exception->getLine();
+        $code          = $throwable->getCode();
+        $message       = $throwable->getMessage();
+        $file          = $throwable->getFile();
+        $line          = $throwable->getLine();
         $fullClassName = get_class($exception);
         $className     = preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $fullClassName);
         $now           = new \DateTime();
@@ -72,7 +66,7 @@ class ExceptionHelper
         $attachment->addField(new AttachmentField('Timestamp', $now->format(DATE_ATOM), true));
 
         if ($trace || $this->shouldAddTrace()) {
-            $attachment->addField(new AttachmentField('Trace', $this->getExceptionTraceAsString($exception)));
+            $attachment->addField(new AttachmentField('Trace', $this->getThrowableTraceAsString($throwable)));
         }
 
         $mmMessage->addAttachment($attachment);
@@ -116,19 +110,15 @@ class ExceptionHelper
 
     /**
      * Check to see if this exception is in an exclude list
-     *
-     * @param \Exception $exception
-     *
-     * @return bool
      */
-    public function shouldProcessException(\Exception $exception): bool
+    public function shouldProcessException(\Throwable $throwable): bool
     {
         $shouldProcess = true;
         $config        = $this->mmService->getEnvironmentConfiguration();
         if (!empty($config) && array_key_exists('exception', $config)) {
             $exceptionConf = $config['exception'];
             if (array_key_exists('exclude_class', $exceptionConf)) {
-                $className   = get_class($exception);
+                $className   = get_class($throwable);
                 $excludeList = $exceptionConf['exclude_class'];
                 foreach ($excludeList as $exclude) {
                     if ($exclude == $className) {
@@ -142,16 +132,11 @@ class ExceptionHelper
         return $shouldProcess;
     }
 
-    /**
-     * @param \Exception $exception
-     *
-     * @return string
-     */
-    private function getExceptionTraceAsString(\Exception $exception): string
+    private function getThrowableTraceAsString(\Throwable $throwable): string
     {
         $rtn   = '';
         $count = 0;
-        foreach ($exception->getTrace() as $frame) {
+        foreach ($throwable->getTrace() as $frame) {
             $args = '';
             if (isset($frame['args'])) {
                 $argList = [];
