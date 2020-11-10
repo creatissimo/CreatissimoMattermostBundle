@@ -34,7 +34,7 @@ class ExceptionHelper
         $message       = $throwable->getMessage();
         $file          = $throwable->getFile();
         $line          = $throwable->getLine();
-        $fullClassName = get_class($exception);
+        $fullClassName = get_class($throwable);
         $className     = preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $fullClassName);
         $now           = new \DateTime();
 
