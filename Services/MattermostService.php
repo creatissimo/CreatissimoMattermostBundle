@@ -113,7 +113,7 @@ class MattermostService
                     }
                 }
 
-                $messageArray['attachments'][] = $attachmentArray;
+                $messageArray['props']['attachments'][] = $attachmentArray;
             }
         }
 
@@ -337,7 +337,7 @@ class MattermostService
         if (strlen($this->serializeMessage()) > self::MAX_MESSAGE_LENGTH) {
             $attachments = $this->message->getAttachments();
             if (count($attachments) > 1) {
-                rewind($attachments);
+                reset($attachments);
                 $this->message->setAttachments([current($attachments)]);
             }
             if (strlen($this->serializeMessage()) > self::MAX_MESSAGE_LENGTH) {
