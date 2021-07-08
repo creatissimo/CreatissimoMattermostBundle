@@ -158,7 +158,7 @@ class MattermostService
             [$httpStatusCode, $response] = $this->sendCurlRequest($url, $message);
         }
 
-        if ($httpStatusCode !== 200) {
+        if ($httpStatusCode !== 200 && $httpStatusCode !== 201) {
             $this->log('Failed to post to mattermost: status ' . $httpStatusCode . '; Message: ' . $message . ' (' . $response . ')');
 
             return false;
