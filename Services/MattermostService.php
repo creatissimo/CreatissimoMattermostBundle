@@ -12,9 +12,7 @@ namespace Creatissimo\MattermostBundle\Services;
 use Creatissimo\MattermostBundle\Entity\Attachment;
 use Creatissimo\MattermostBundle\Entity\AttachmentField;
 use Creatissimo\MattermostBundle\Entity\Message;
-use phpDocumentor\Reflection\Types\Self_;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpKernel\Log\Logger;
 
 /**
  * Class MattermostService
@@ -32,11 +30,11 @@ class MattermostService
     private string          $appname;
     private array           $configuration             = [];
     private array           $environmentConfigurations = [];
-    private Message         $message;
+    private ?Message        $message                   = null;
 
-    const MAX_MESSAGE_LENGTH = 7600;
-    const MAX_TEXT_LENGTH    = 3000;
-    const CUT_LENGTH         = 1000;
+    protected const MAX_MESSAGE_LENGTH = 7600;
+    protected const MAX_TEXT_LENGTH    = 3000;
+    protected const CUT_LENGTH         = 1000;
 
     public function __construct(string $environment, LoggerInterface $logger)
     {
@@ -63,10 +61,11 @@ class MattermostService
     {
         if ($this->message) {
             $conf = $this->getConfiguration();
-            if ($conf && is_array($conf)) {
-                if (array_key_exists('channel', $conf) && ($force || (!$force && !$this->message->getChannel()))) {
-                    $this->message->setChannel($conf['channel']);
-                }
+            if ($conf && is_array($conf)
+                && array_key_exists('channel', $conf)
+                && ($force || (!$force && !$this->message->getChannel()))
+            ) {
+                $this->message->setChannel($conf['channel']);
             }
         }
 
@@ -205,12 +204,12 @@ class MattermostService
 
     public function getBotAccessToken(): string
     {
-        return $this->accessToken;
+        return $this->botAccessToken;
     }
 
     public function setBotAccessToken(string $botAccessToken): self
     {
-        $this->accessToken = $botAccessToken;
+        $this->botAccessToken = $botAccessToken;
 
         return $this;
     }
