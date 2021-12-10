@@ -52,7 +52,7 @@ class MattermostService
         return $this;
     }
 
-    public function getMessage(): Message
+    public function getMessage(): ?Message
     {
         return $this->message;
     }
