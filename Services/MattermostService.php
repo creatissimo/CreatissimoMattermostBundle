@@ -20,8 +20,9 @@ use Psr\Log\LoggerInterface;
  */
 class MattermostService
 {
-    private const API_BASE_PATH      = '/api/v4/';
-    private const API_ENDPOINT_POSTS = self::API_BASE_PATH . 'posts';
+    private const API_BASE_PATH                = '/api/v4/';
+    private const API_ENDPOINT_POSTS           = self::API_BASE_PATH . 'posts';
+    private const API_ENDPOINT_CHANNELS_DIRECT = self::API_BASE_PATH . 'channels/direct';
 
     private string          $environment;
     private LoggerInterface $logger;
@@ -169,6 +170,13 @@ class MattermostService
         }
 
         return true;
+    }
+
+    public function createDirectChannel(string $senderId, string $receiverId): ?array
+    {
+        $url = $this->getUrl() . self::API_ENDPOINT_CHANNELS_DIRECT;
+
+        return $this->sendCurlRequest($url, json_encode([$senderId, $receiverId]));
     }
 
     protected function log(string $message)
