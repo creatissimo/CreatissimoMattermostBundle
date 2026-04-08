@@ -154,6 +154,7 @@ class ExceptionHelper
                     }
                 }
                 $args = implode(', ', $argList);
+                $args = preg_replace('/[\x00-\x1F\x7F]/u', '', $args);
             }
             $rtn .= sprintf("#%s %s(%s): %s(%s)\n",
                 $count,
